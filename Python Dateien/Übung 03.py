@@ -10,14 +10,13 @@
 
 import tkinter as tk
 import numpy as np
-import matplotlib as plt
+import matplotlib as mpl
+import matplotlib.animation as animation
 
-plt.use('TkAgg')
+mpl.use('TkAgg')
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-
-test_data_y = np.linspace(0, 100, 100)
 
 window = tk.Tk()
 window.title("Übung 03 - Statische Eigenschaften von Messystemen")
@@ -29,7 +28,9 @@ toolbar = NavigationToolbar2Tk(figure_canvas, window, pack_toolbar=False)
 
 axes = figure.add_subplot()
 
-axes.plot(test_data_y)
+graph = np.linspace(0, 100, 100)
+
+axes.plot(graph)
 axes.set_title("Kennlinien Fehler Demo")
 
 offset_toggle = tk.DoubleVar
@@ -48,7 +49,6 @@ offset_scale = tk.Scale(window, showvalue=1, orient='horizontal', variable=offse
 verstärkung_scale = tk.Scale(window, showvalue=1, orient='horizontal', variable=verstärkung_value, from_=-100.00, to=100.00)
 linearität_scale = tk.Scale(window, showvalue=1, orient='horizontal', variable=linearität_value, from_=-100.00, to=100.00)
 
-
 window.columnconfigure(0, weight=0)
 window.columnconfigure(1, weight=10)
 figure_canvas.get_tk_widget().grid(row = 0, column = 0, columnspan = 2)
@@ -59,5 +59,12 @@ offset_scale.grid(row = 1, column = 1, sticky = 'ew', pady = 10, padx = 40)
 verstärkung_scale.grid(row = 2, column = 1, sticky = 'ew', pady = 10, padx = 40)
 linearität_scale.grid(row = 3, column = 1, sticky = 'ew', pady = 10, padx = 40)
 
+def animate(i):
+    global offset_scale, axes
+    graph = np.linspace(0, offset_scale.get(), 100)
+    axes.clear()
+    axes.plot(graph)
+
 if __name__ == "__main__":
+    ani = animation.FuncAnimation(figure, animate, interval = 100)
     window.mainloop()
