@@ -32,13 +32,13 @@ axes = figure.add_subplot()
 axes.plot(test_data_y)
 axes.set_title("Kennlinien Fehler Demo")
 
-offset_toggle = 0
-verstärkung_toggle = 0
-linearität_toggle = 0
+offset_toggle = tk.DoubleVar
+verstärkung_toggle = tk.DoubleVar
+linearität_toggle = tk.DoubleVar
 
-offset_value = 0
-verstärkung_value = 0
-linearität_value = 0
+offset_value = tk.DoubleVar
+verstärkung_value = tk.DoubleVar
+linearität_value = tk.DoubleVar
 
 offset_checkbox = tk.Checkbutton(window, text="Offsetfehler", variable=offset_toggle, onvalue=1, offvalue=0)
 verstärkung_checkbox = tk.Checkbutton(window, text="Verstärkungsfehler", variable=verstärkung_toggle, onvalue=1, offvalue=0)
