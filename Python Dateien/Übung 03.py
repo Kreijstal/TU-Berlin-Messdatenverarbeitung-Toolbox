@@ -3,9 +3,12 @@
 
 import tkinter as tk
 import numpy as np
+import matplotlib as mpl
 import matplotlib.animation as animation
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+
+mpl.use('TkAgg')
 
 title = "Übung 03 - Statische Eigenschaften von Messystemen"
 
@@ -76,6 +79,8 @@ class TKWindow(tk.Tk):
         
         for x in range(0, self.graph.size):
             self.graph[x] = a*x**2 + b*x + c
+
+# toolbar = NavigationToolbar2Tk(figure_canvas, window, pack_toolbar=False)
 
 if __name__ == "__main__":
     exercise_03 = TKWindow(title)
