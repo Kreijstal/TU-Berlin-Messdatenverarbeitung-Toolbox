@@ -3,29 +3,29 @@
 
 import tkinter as tk
 import numpy as np
-import matplotlib as mpl
 import matplotlib.animation as animation
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-mpl.use('TkAgg')
-
-title = "Übung 03 - Statische Eigenschaften von Messystemen"
+window_title = "Übung 03 - Statische Eigenschaften von Messystemen"
 
 class TKWindow(tk.Tk):
-    #figure = Figure(figsize=(6, 4), dpi=100)
-    graph = np.zeros(100)
+    axes_params = {"bounds": 100}
     
-    def __init__(self, title):
+    graph = {"x": np.linspace(0, axes_params["bounds"], axes_params["bounds"]+1), 
+             "y": np.zeros(axes_params["bounds"]+1),
+             "y_ideal": np.linspace(0, axes_params["bounds"], axes_params["bounds"]+1)}
+    
+    def __init__(self, title = "Test Window"):
         super().__init__()
-        self.init_window()
+        self.init_window(title)
         self.init_params()
         self.init_figure()
         self.init_axes()
         self.create_widgets()
         self.place_widgets()
     
-    def init_window(self):
+    def init_window(self, title):
         self.title(title)
         self.resizable(False, False)
         self.columnconfigure(0, weight=0)
@@ -42,7 +42,6 @@ class TKWindow(tk.Tk):
     
     def init_axes(self):
         self.axes = self.figure.add_subplot()
-        self.axes.set_title("Kennlinien Fehler Demo")                       #dynamisch
     
     def create_widgets(self):
         self.checkboxes = {'offset': tk.Checkbutton(self, text="Offsetfehler", variable=self.params['offset'][0], onvalue=True, offvalue=False),
@@ -70,18 +69,28 @@ class TKWindow(tk.Tk):
     def animate(self, i):
         self.update_graph()
         self.axes.clear()
-        self.axes.plot(self.graph)
+        self.axes.set_title("Kennlinien Fehler Demo")
+        self.axes.set_xlabel("X Achse")
+        self.axes.set_ylabel("Y Achse")
+        self.axes.autoscale(False)
+        self.axes.grid()
+        self.axes.minorticks_on()
+        self.axes.set_xbound(lower = 0, upper = self.axes_params["bounds"])
+        self.axes.set_ybound(lower = 0, upper = self.axes_params["bounds"])
+        self.axes.plot(self.graph["x"], self.graph["y"], label = "Kennlinie mit Fehler", color = "blue", linestyle = "-")
+        self.axes.plot(self.graph["x"], self.graph["y_ideal"], label = "ideale Kennlinie", color = "red", linestyle = "--")
+        self.axes.legend(loc="upper right")
     
     def update_graph(self):
         a = self.params['linearity'][1].get() if self.params['linearity'][0].get() else 0
         b = 1 + self.params['amplification'][1].get() if self.params['amplification'][0].get() else 1
         c = self.params['offset'][1].get() if self.params['offset'][0].get() else 0
         
-        for x in range(0, self.graph.size):
-            self.graph[x] = a*x**2 + b*x + c
+        for x in range(0, self.axes_params["bounds"]+1):
+            self.graph["y"][x] = a*x**2 + b*x + c
 
 # toolbar = NavigationToolbar2Tk(figure_canvas, window, pack_toolbar=False)
 
 if __name__ == "__main__":
-    exercise_03 = TKWindow(title)
+    exercise_03 = TKWindow(window_title)
     exercise_03.window_loop()
