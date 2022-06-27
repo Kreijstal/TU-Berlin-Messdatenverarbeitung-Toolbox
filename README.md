@@ -21,3 +21,18 @@ Beispiel: Thema Messbrücke: Es sollen die 4 Impedanzen einer Messbrücke sowie 
 ```
 Betreuer: Daniel Thomanek
 ```
+
+## Aufgabenverteilung
+
+- [ ] @kreijstal    -   Übung 01 - Statistik
+- [ ] @borismaurer  -   Übung 02 - Regression & Interpolation
+- [ ] @eriktroendle -   Übung 03 - Statische Eigenschaften von Messystemen
+- [ ] @kreijstal    -   Übung 04 - Dynamische Eigenschaften von Messystemen
+- [ ] Übung 05 - Statistik
+- [ ] Übung 06 - Statistik
+- [ ] @borismaurer  -   Übung 07 - Statistik
+
+
+@borismaurer
+@eriktroendle
+@kreijstal
