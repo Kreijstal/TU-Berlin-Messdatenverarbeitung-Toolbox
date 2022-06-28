@@ -1,6 +1,10 @@
 # Notes
 # https://www.tutorialspoint.com/python/python_gui_programming.htm
 
+# Improved Checkboxes and parameter dictionarys
+# Made checkboxes checked at start and added dictionarys for all 
+# parameters of window, widgets and plots
+
 import tkinter as tk
 import numpy as np
 import matplotlib.animation as animation
@@ -10,11 +14,43 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 window_title = "Übung 03 - Statische Eigenschaften von Messystemen"
 
 class TKWindow(tk.Tk):
-    axes_params = {"bounds": 100}
+    axes_params = {"bounds": 100,
+                   "title": "Kennlinien Fehler",
+                   "xlabel": "Output",
+                   "ylabel": "Input",
+                   "plot1": {"label": "reale Kennlinie",
+                             "color": "blue",
+                             "linestyle": "-"},
+                   "plot2": {"label": "ideale Kennlinie",
+                             "color": "red",
+                             "linestyle": "--"},
+                   "legend_position": "upper left"}
     
-    graph = {"x": np.linspace(0, axes_params["bounds"], axes_params["bounds"]+1), 
+    graphs = {"x": np.linspace(0, axes_params["bounds"], axes_params["bounds"]+1), 
              "y": np.zeros(axes_params["bounds"]+1),
              "y_ideal": np.linspace(0, axes_params["bounds"], axes_params["bounds"]+1)}
+    
+    widget_params = {"offset_checkbox": {"name": "offset",
+                                          "text": "Offsetfehler",
+                                          "variable": None},
+                     "amplification_checkbox": {"name": "amplification",
+                                                "text": "Verstärkungsfehler",
+                                                "variable": None},
+                     "linearity_checkbox": {"name": "linearity",
+                                            "text": "Linearitätsfehler",
+                                            "variable": None},
+                     "offset_scale": {"name": "offset", 
+                                      "variable": None,
+                                      "from": -100,
+                                      "to": 100},
+                     "amplification_scale": {"name": "amplification", 
+                                             "variable": None,
+                                             "from": -100,
+                                             "to": 100},
+                     "linearity_scale": {"name": "linearity", 
+                                         "variable": None,
+                                         "from": -25,
+                                         "to": 25}}    
     
     def __init__(self, title = "Test Window"):
         super().__init__()
@@ -24,6 +60,7 @@ class TKWindow(tk.Tk):
         self.init_axes()
         self.create_widgets()
         self.place_widgets()
+        self.init_widgets()
     
     def init_window(self, title):
         self.title(title)
@@ -32,9 +69,12 @@ class TKWindow(tk.Tk):
         self.columnconfigure(1, weight=10)
     
     def init_params(self):
-        self.params = {'offset': [tk.BooleanVar(), tk.DoubleVar()], 
-                       'amplification': [tk.BooleanVar(), tk.DoubleVar()], 
-                       'linearity': [tk.BooleanVar(), tk.DoubleVar()]}
+        self.widget_params["offset_checkbox"]["variable"] = tk.BooleanVar()
+        self.widget_params["amplification_checkbox"]["variable"] = tk.BooleanVar()
+        self.widget_params["linearity_checkbox"]["variable"] = tk.BooleanVar()
+        self.widget_params["offset_scale"]["variable"] = tk.DoubleVar()
+        self.widget_params["amplification_scale"]["variable"] = tk.DoubleVar()
+        self.widget_params["linearity_scale"]["variable"] = tk.DoubleVar()
     
     def init_figure(self):
         self.figure = Figure(figsize=(6, 4), dpi=100)
@@ -44,12 +84,39 @@ class TKWindow(tk.Tk):
         self.axes = self.figure.add_subplot()
     
     def create_widgets(self):
-        self.checkboxes = {'offset': tk.Checkbutton(self, text="Offsetfehler", variable=self.params['offset'][0], onvalue=True, offvalue=False),
-                           'amplification': tk.Checkbutton(self, text="Verstärkungsfehler", variable=self.params['amplification'][0], onvalue=True, offvalue=False),
-                           'linearity': tk.Checkbutton(self, text="Linearitätsfehler", variable=self.params['linearity'][0], onvalue=True, offvalue=False)}
-        self.scales = {'offset': tk.Scale(self, showvalue=1, orient='horizontal', variable=self.params['offset'][1], from_=-100.00, to=100.00),
-                       'amplification': tk.Scale(self, showvalue=1, orient='horizontal', variable=self.params['amplification'][1], from_=-1.00, to=1.00),
-                       'linearity': tk.Scale(self, showvalue=1, orient='horizontal', variable=self.params['linearity'][1], from_=-1.00, to=1.00)}
+        self.checkboxes = {self.widget_params["offset_checkbox"]["name"]: tk.Checkbutton(self, 
+                                                                                         text=self.widget_params["offset_checkbox"]["text"], 
+                                                                                         variable=self.widget_params["offset_checkbox"]["variable"], 
+                                                                                         onvalue=True, 
+                                                                                         offvalue=False),
+                           self.widget_params["amplification_checkbox"]["name"]: tk.Checkbutton(self, 
+                                                                                                text=self.widget_params["amplification_checkbox"]["text"], 
+                                                                                                variable=self.widget_params["amplification_checkbox"]["variable"], 
+                                                                                                onvalue=True, 
+                                                                                                offvalue=False),
+                           self.widget_params["linearity_checkbox"]["name"]: tk.Checkbutton(self, 
+                                                                                            text=self.widget_params["linearity_checkbox"]["text"], 
+                                                                                            variable=self.widget_params["linearity_checkbox"]["variable"], 
+                                                                                            onvalue=True, 
+                                                                                            offvalue=False)}
+        self.scales = {self.widget_params["offset_scale"]["name"]: tk.Scale(self, 
+                                                                            showvalue=1, 
+                                                                            orient='horizontal', 
+                                                                            variable=self.widget_params["offset_scale"]["variable"], 
+                                                                            from_=self.widget_params["offset_scale"]["from"], 
+                                                                            to=self.widget_params["offset_scale"]["to"]),
+                       self.widget_params["amplification_scale"]["name"]: tk.Scale(self, 
+                                                                                   showvalue=1, 
+                                                                                   orient='horizontal', 
+                                                                                   variable=self.widget_params["amplification_scale"]["variable"], 
+                                                                                   from_=self.widget_params["amplification_scale"]["from"], 
+                                                                                   to=self.widget_params["amplification_scale"]["to"]),
+                       self.widget_params["linearity_scale"]["name"]: tk.Scale(self, 
+                                                                               showvalue=1, 
+                                                                               orient='horizontal', 
+                                                                               variable=self.widget_params["linearity_scale"]["variable"], 
+                                                                               from_=self.widget_params["linearity_scale"]["from"], 
+                                                                               to=self.widget_params["linearity_scale"]["to"])}
     
     def place_widgets(self):
         self.figure_canvas.get_tk_widget().grid(row = 0, column = 0, columnspan = 2)
@@ -62,6 +129,9 @@ class TKWindow(tk.Tk):
         self.scales['amplification'].grid(row = 2, column = 1, sticky = 'ew', pady = 10, padx = 40)
         self.scales['linearity'].grid(row = 3, column = 1, sticky = 'ew', pady = 10, padx = 40)
     
+    def init_widgets(self):
+        [self.checkboxes[checkbox].select() for checkbox in self.checkboxes]
+    
     def window_loop(self):
         self.animation_object = animation.FuncAnimation(self.figure, self.animate, interval = 100)
         self.mainloop()
@@ -69,27 +139,35 @@ class TKWindow(tk.Tk):
     def animate(self, i):
         self.update_graph()
         self.axes.clear()
-        self.axes.set_title("Kennlinien Fehler Demo")
-        self.axes.set_xlabel("X Achse")
-        self.axes.set_ylabel("Y Achse")
+        self.axes.set_title(self.axes_params["title"])
+        self.axes.set_xlabel(self.axes_params["xlabel"])
+        self.axes.set_ylabel(self.axes_params["ylabel"])
         self.axes.autoscale(False)
         self.axes.grid()
         self.axes.minorticks_on()
         self.axes.set_xbound(lower = 0, upper = self.axes_params["bounds"])
         self.axes.set_ybound(lower = 0, upper = self.axes_params["bounds"])
-        self.axes.plot(self.graph["x"], self.graph["y"], label = "Kennlinie mit Fehler", color = "blue", linestyle = "-")
-        self.axes.plot(self.graph["x"], self.graph["y_ideal"], label = "ideale Kennlinie", color = "red", linestyle = "--")
-        self.axes.legend(loc="upper right")
+        self.axes.plot(self.graphs["x"], 
+                       self.graphs["y"], 
+                       label = self.axes_params["plot1"]["label"], 
+                       color = self.axes_params["plot1"]["color"], 
+                       linestyle = self.axes_params["plot1"]["linestyle"])
+        self.axes.plot(self.graphs["x"], 
+                       self.graphs["y_ideal"], 
+                       label = self.axes_params["plot2"]["label"], 
+                       color = self.axes_params["plot2"]["color"], 
+                       linestyle = self.axes_params["plot2"]["linestyle"])
+        self.axes.legend(loc=self.axes_params["legend_position"])
     
     def update_graph(self):
-        a = self.params['linearity'][1].get() if self.params['linearity'][0].get() else 0
-        b = 1 + self.params['amplification'][1].get() if self.params['amplification'][0].get() else 1
-        c = self.params['offset'][1].get() if self.params['offset'][0].get() else 0
+        a = self.widget_params["offset_scale"]["variable"].get() if self.widget_params['offset_checkbox']["variable"].get() else 0
+        b = 1 + self.widget_params["amplification_scale"]["variable"].get()/(100 if self.widget_params["amplification_scale"]["variable"].get() < 0 else 10) \
+        if self.widget_params['amplification_checkbox']["variable"].get() else 1
+        c = self.widget_params["linearity_scale"]["variable"].get() if self.widget_params['linearity_checkbox']["variable"].get() else 0
+        d = self.axes_params["bounds"]/2
         
         for x in range(0, self.axes_params["bounds"]+1):
-            self.graph["y"][x] = a*x**2 + b*x + c
-
-# toolbar = NavigationToolbar2Tk(figure_canvas, window, pack_toolbar=False)
+            self.graphs["y"][x] = a + b*x - c*((x/d - 1)**2 - 1)
 
 if __name__ == "__main__":
     exercise_03 = TKWindow(window_title)
