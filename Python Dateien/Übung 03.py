@@ -84,21 +84,6 @@ class TKWindow(tk.Tk):
         self.axes = self.figure.add_subplot()
     
     def create_widgets(self):
-        self.checkboxes = {self.widget_params["offset_checkbox"]["name"]: tk.Checkbutton(self, 
-                                                                                         text=self.widget_params["offset_checkbox"]["text"], 
-                                                                                         variable=self.widget_params["offset_checkbox"]["variable"], 
-                                                                                         onvalue=True, 
-                                                                                         offvalue=False),
-                           self.widget_params["amplification_checkbox"]["name"]: tk.Checkbutton(self, 
-                                                                                                text=self.widget_params["amplification_checkbox"]["text"], 
-                                                                                                variable=self.widget_params["amplification_checkbox"]["variable"], 
-                                                                                                onvalue=True, 
-                                                                                                offvalue=False),
-                           self.widget_params["linearity_checkbox"]["name"]: tk.Checkbutton(self, 
-                                                                                            text=self.widget_params["linearity_checkbox"]["text"], 
-                                                                                            variable=self.widget_params["linearity_checkbox"]["variable"], 
-                                                                                            onvalue=True, 
-                                                                                            offvalue=False)}
         self.scales = {self.widget_params["offset_scale"]["name"]: tk.Scale(self, 
                                                                             showvalue=1, 
                                                                             orient='horizontal', 
@@ -117,6 +102,27 @@ class TKWindow(tk.Tk):
                                                                                variable=self.widget_params["linearity_scale"]["variable"], 
                                                                                from_=self.widget_params["linearity_scale"]["from"], 
                                                                                to=self.widget_params["linearity_scale"]["to"])}
+        self.checkboxes = {self.widget_params["offset_checkbox"]["name"]: tk.Checkbutton(self, 
+                                                                                         text=self.widget_params["offset_checkbox"]["text"], 
+                                                                                         variable=self.widget_params["offset_checkbox"]["variable"], 
+                                                                                         command=lambda: self.checkbox_clicked(self.scales[self.widget_params["offset_scale"]["name"]]),
+                                                                                         onvalue=True, 
+                                                                                         offvalue=False),
+                           self.widget_params["amplification_checkbox"]["name"]: tk.Checkbutton(self, 
+                                                                                                text=self.widget_params["amplification_checkbox"]["text"], 
+                                                                                                variable=self.widget_params["amplification_checkbox"]["variable"], 
+                                                                                                command=lambda: self.checkbox_clicked(self.scales[self.widget_params["amplification_scale"]["name"]]),
+                                                                                                onvalue=True, 
+                                                                                                offvalue=False),
+                           self.widget_params["linearity_checkbox"]["name"]: tk.Checkbutton(self, 
+                                                                                            text=self.widget_params["linearity_checkbox"]["text"], 
+                                                                                            variable=self.widget_params["linearity_checkbox"]["variable"], 
+                                                                                            command=lambda: self.checkbox_clicked(self.scales[self.widget_params["linearity_scale"]["name"]]),
+                                                                                            onvalue=True, 
+                                                                                            offvalue=False)}
+    
+    def checkbox_clicked(self, scale):
+        scale.set(0)
     
     def place_widgets(self):
         self.figure_canvas.get_tk_widget().grid(row = 0, column = 0, columnspan = 2)
