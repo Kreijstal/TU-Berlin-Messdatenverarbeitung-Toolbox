@@ -1,0 +1,276 @@
+%%%%%%% EINLEITUNG %%%%%%%
+% Das Lastenheft beschreibt das Grobkonzept eines Projektes aus sicht des Auftraggebers.
+% Es beschreibt lediglich die Basisanforderungen und geht nicht tief ins Detail.
+%
+% In dem Pflichtenheft wird daher von dem Projektbearbeiter dargelegt, 
+% wie er die Aufgabenstellung interpretiert und in welchen Schritten er im Detail
+% die Aufgabe abarbeiten möchte.
+% Das Pflichtenheft muss mit dem Auftraggeber (Betreuer) abgestimmt werden und
+% gilt danach als verbindliche Grundlage für die Bewertung der in dem Projekt erbrachten Leistungen.
+%
+%%%%%%% BENUTZUNG DIESER VORLAGE %%%%%%%
+%
+% In dieser Vorlage gibt es zu jedem Abschnitt einen Kommentar mit einer kurzen Erklärung.
+% Darunter ist stehts ein konkretes Beispiel für ein fiktives Projekt abgegeben.
+%
+% Bei der Erstellung des eignen Pflichtenheftes sollten die eingetragenen Beispiele
+% vollständig durch entsprechende Eintragungen für das eigenen Projekt ersetzt werden.
+%
+
+
+%%%%%%% PRÄAMBEL %%%%%%%
+% Dokumentenklasse
+\documentclass[ngerman,openany]{scrartcl}
+\usepackage[latin1]{inputenc}
+
+% Pakete
+\usepackage{pgfgantt}
+\usepackage{units}
+\usepackage{tabularx}
+
+% Titel
+\title{Pflichtenheft \\ Großes Projekt Messdatenverarbeitung}
+\subtitle{Aufbau eines digitalen Gitarrenstimmgerätes}
+\author{Max Mustermann (000 0006), Bea Beispiel (000 007)}
+\date{23.02.2010}
+
+%%%%%%% DOKUMENT %%%%%%%
+\begin{document}
+\maketitle
+
+\section{Projektziel}
+% Hier soll das Ziel des Projektes in eigenen Worten beschrieben werden.
+% Dabei sollte auf die Bedeutung und den Nutzen des Projektergebnisses eingegangen werden.
+
+Ziel des Projektes ist der Aufbau eines digitalen Gitarrenstimmgerätes.
+Dadurch soll das Stimmen der Fachgebietsgitarre ermöglicht werden.
+Darüber hinaus soll die Grundlage für eine Labor-Lehrveranstaltung geschaffen werden,
+in der die Studierenden durch den Aufbau eines solchen Stimmgerätes in die Grundlagen der
+Signalanalyse auf Mikrocontrollern eingeführt werden.
+
+\section{Anforderungen}
+% Hier sollen die Anforderungen an das Projektergebnis beschrieben werden. 
+% Es soll zwischen unbedingt erforderlichen Muss-Anforderungen und optionalen Kann-Anforderungen unterschieden werden.
+
+\subsection{Muss-Anforderungen}
+\begin{itemize}
+% Hier soll eine vollständige und nachprüfbare Beschreibung einer Anforderung an das Projektergebnis beschrieben werden.
+\item Das Stimmgerät muss in der Lage sein die Töne der Gitarre für mindestens eine Sekunde aufzunehmen, zu digitalisieren und intern zu speichern.
+
+\item Die aufgenommenen Messdaten sollen von dem Stimmgerät selbst ohne Hilfe externer analysiert werden.
+		Es soll die Frequenz des Signalanteils mit der stärksten Amplitude mit einer Genauigkeit von mindestens \unit[2]{Hz} bestimmt 
+		und mit der Sollfrequenz verglichen werden.
+\item Das Ergebnis der Datenanalyse soll dem Benutzer in mindestens drei Stufen (zu tief, richtig, zu hoch) angezeigt werden.
+	Die zu stimmende Saite soll von dem Benutzer vor der Datenaufnahme gewählt werden.
+\item Die Schaltung des Gerätes ist vollständig auf einer gedruckten Leiterplatte aufzubauen.
+\end{itemize}
+
+\subsection{Optionale Anforderungen}
+\begin{itemize}
+\item Das Gerät soll die gespielte Saite automatisch erkennen, sodass die Saitenwahl durch den Benutzer entfallen kann.
+\item Das Gerät soll unabhängig von einer externen Stromversorgung mit einer Batterie betrieben werden können.
+\item Das Gerät ist in ein schönes, handliches Gehäuse einzubauen.
+\end{itemize}
+
+\section{Arbeitspakete}
+% Hier sollen die einzelnen Arbeitspakete, in denen das Projekt abgearbeitet werden soll beschrieben werden.
+% Für jedes Arbeitspaket muss eine Beschreibung sowie der geschätzte Arbeitsaufwand in Mannstunden angegeben werden.
+% Wird das Projekt von mehreren Personen bearbeitet, sollen jedem Arbeitspaket ein oder mehrere Zuständige Bearbeiter zugeordnet werden.
+% Zusätzlich zu den Arbeitspaketen sollen Meilensteine definiert werden. 
+% Dies sind Zeitpunkte zu denen ein Zwischenergebnis bei der Projektbearbeitung erreicht wurde und eine neue Phase beginnt.
+
+\subsection{Projektplanung}
+\label{sec:plan}
+Dieses Arbeitspaket umfasst die Erstellung des Pflichtenheftes zu dem Projekt.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[16]{h} \\\hline
+Personen & Max Mustermann, Bea Beispiel \\\hline
+Arbeitsmittel & Lastenheft, Vorlage, Literatur \\\hline
+Ergebnisse & Pflichtenheft \\\lasthline
+\end{tabularx}
+
+\subsection{Informationssammlung/-zusammenstellung}
+\label{sec:sammlung}
+Dieses Arbeitspaket umfasst die Recherche nach Verfahren zur Tonerkennung, ihren Implementierungsmöglichkeiten auf Mikrocontrollern und Grundschaltungen zur Datenaufnahme.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[48]{h} \\\hline
+Personen & Max Mustermann, Bea Beispiel \\\hline
+Arbeitsmittel & Literatur, Vorlesungsfolien, Internet \\\hline
+Ergebnisse & Stichpunktliste mit Realisierungsmöglichkeiten, Ordner mit relevanten Unterlagen, Grobkonzept für Hard- und Software \\\lasthline
+\end{tabularx}
+
+\subsection{Bedienkonzept}
+\label{sec:bedien}
+Dieses Arbeitspaket umfasst den Entwurf des Bedienkonzeptes für das Stimmgerät.
+Es wird festgelegt welche Bedienelemente dem Benutzer bereitgestellt werden und wie das Gerät auf eingaben reagieren soll.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[8]{h} \\\hline
+Personen & Max Mustermann, Bea Beispiel \\\hline
+Arbeitsmittel & Ergebnisse von \ref{sec:sammlung} \\\hline
+Ergebnisse & Liste der Bedienelemente, stichpunktartige Beschreibung der Use-Cases \\\lasthline
+\end{tabularx}
+
+\subsection{Vorversuche}
+\label{sec:vor}
+Dieses Arbeitspaket umfasst die mehrfache Aufnahme der Töne von Gittarrensaiten.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[8]{h} \\\hline
+Personen & Bea Beispiel \\\hline
+Arbeitsmittel & Mikrofon, PC, Matlab, NI-Messkarte \\\hline
+Ergebnisse & wav-Dateien der Aufnahmen \\\lasthline
+\end{tabularx}
+
+\subsection{Hardware-Entwurf}
+\label{sec:hardentw}
+Dieses Arbeitspaket umfasst den Entwurf der Hardware für das Stimmgerät.
+Es werden die benötigten Bauteile ausgewählt, dimensioniert und der Schaltplan des Gerätes erstellt.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[40]{h} \\\hline
+Personen & Max Mustermann \\\hline
+Arbeitsmittel & Ergebnisse von \ref{sec:sammlung} und \ref{sec:bedien} \\\hline
+Ergebnisse & Schaltplan des Gerätes, Bauteilliste \\\lasthline
+\end{tabularx}
+
+\subsection{Software-Entwurf}
+\label{sec:softentw}
+Diese Arbeitspaket umfasst den Entwurf der Software für das Stimmgerät. 
+Die Software wird in einzelne Module aufgeteilt und die Schnittstellen zwischen den Modulen werden definiert.
+Der Programmablauf wird entworfen und geeignete Algorithmen für die Signalanalyse ausgewählt.
+Dazu werden Tests mit den aufgenommen wav-Dateien in Maltab durchgeführt.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[48]{h} \\\hline
+Personen & Bea Beispiel \\\hline
+Arbeitsmittel & Ergebnisse von \ref{sec:sammlung} und \ref{sec:bedien}, Maltab, Entwicklungsumgebung für Mikrocontroller \\\hline
+Ergebnisse & Schaltplan des Gerätes \\\lasthline
+\end{tabularx}
+
+\subsection{Hardware-Aufbau}
+\label{sec:hardauf}
+Diese Arbeitspaket umfasst die Erstellung des Platinen-Layouts für das Stimmgerät, den Einkauf der Bauteile,
+das Ätzen sowie das Bestücken der Platine.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[32]{h} \\\hline
+Personen & Max Mustermann \\\hline
+Arbeitsmittel & Ergebnisse von \ref{sec:hardentw}, Lötwerkzeug, Multimeter \\\hline
+Ergebnisse & Schaltplan des Gerätes \\\lasthline
+\end{tabularx}
+
+\subsection{Software-Implementierung}
+\label{sec:softauf}
+Dieses Arbeitspaket umfasst die Implementierung der Software. Die Software wird vollständig geschrieben, kompiliert und soweit möglich im
+Simulator der Entwicklungsumgebung getestet.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[16]{h} \\\hline
+Personen & Bea Beispiel \\\hline
+Arbeitsmittel & Ergebnisse von \ref{sec:softentw}, Entwicklungsumgebung für Mikrocontroller \\\hline
+Ergebnisse & Schaltplan des Gerätes \\\lasthline
+\end{tabularx}
+
+\subsection{Test des Gerätes}
+\label{sec:test}
+Dieses Arbeitspaket umfasst den Test der entwickelten Hard- und Software.
+Es wird zunächst die Frequenzerkennung mit Sinussignalen von einem Frequenzgenerator getestet.
+Anschließend findet der Test mit realen Gitarrentönen statt.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[16]{h} \\\hline
+Personen & Bea Beispiel, Max Mustermann \\\hline
+Arbeitsmittel & Ergebnisse von \ref{sec:hardauf}, \ref{sec:softauf}, Gitarre, Laborgeräte\\\hline
+Ergebnisse & Dokumentation der Testergebnisse, Liste mit Mängeln \\\lasthline
+\end{tabularx}
+
+\subsection{Fehlerbehebung}
+\label{sec:fehler}
+Dieses Arbeitspaket umfasst die Behebung der in \ref{sec:test} festgestellten Mängel.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[40]{h} \\\hline
+Personen & Bea Beispiel, Max Mustermann \\\hline
+Arbeitsmittel & Mängelliste, Entwicklungsumgebung für Mikrocontroller, Laborgeräte \\\hline
+Ergebnisse & Fehlerbereinigte Hard-/Software, Liste der verbleibenden Mängel \\\lasthline
+\end{tabularx}
+
+\subsection{Dokumentation}
+\label{sec:doku}
+Dieses Arbeitspaket umfasst die Erstellung der Projektdokumentation.
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\firsthline
+Aufwand & \unit[80]{h} \\\hline
+Personen & Bea Beispiel, Max Mustermann \\\hline
+Arbeitsmittel & Textverarbeitung \\\hline
+Ergebnisse & Projektdokumenation \\\lasthline
+\end{tabularx}
+
+\section{Meilensteine}
+% Hier sollen Meilensteine beschrieben werden.
+% Dies sind Zeitpunkte zu denen ein Zwischenergebnis bei der Projektbearbeitung erreicht wurde.
+
+\begin{description}
+\item[Pflichtenheft fertig] 
+	Zu diesem Meilenstein ist das Pflichtenheft fertiggestellt.
+\item[Entwurf]
+	Zu diesem Meilenstein ist der Entwurf von Hard- und Software beendet.
+\item[Funktionstest]
+	Zu diesem Meilenstein ist die Hard- und Software fertig aufgebaut und zum ersten mal getestet.
+\item[Präsentation]
+Zu diesem Meilenstein sind alle Arbeiten zu dem Projekt abgeschlossen, die Dokumentation wird an den Betreuer übergeben und die Präsentation gehalten.
+\end{description}
+
+\section{Projektplan}
+% Im Projektplan werden die Arbeitspakete in der realen Zeit angeordnet.
+% Direkte Abhängigkeiten zwischen ihnen werden sichtbar gemacht und 
+% 
+
+\textbf{ca. 16 Arbeitsstunden pro Person und Woche}
+
+\begin{ganttchart}[vgrid={draw=none, dotted}]{17}
+\gantttitle{2010}{17} \\
+\gantttitlelist{16,...,32}{1} \\
+\ganttbar{Projektplanung}{1}{1} \\				% 16 h
+\ganttmilestone{Pflichtenheft}{1} \\	
+\ganttbar{Informationssammlung}{1}{3} \\		% 48 h 
+\ganttbar{Bedienkonzept}{4}{4} \\				% 8 h
+\ganttbar{Vorversuche}{4}{4} \\					% 8 h
+\ganttbar{Software-Entwurf}{4}{8} \\			% 48 h
+\ganttbar{Hardware-Entwurf}{4}{7} \\			% 40 h
+\ganttbar{Hardware-Aufbau}{7}{10} \\			% 32 h
+\ganttmilestone{Entwurf}{8} \\
+\ganttbar{Software-Implementierung}{8}{9} \\	% 16 h
+\ganttbar{Test}{10}{10} \\						% 16 h
+\ganttmilestone{Funktionstest}{10} \\
+\ganttbar[bar/.style={fill=gray}]{Klausuren}{11}{13}\\
+\ganttbar{Fehlerbehebung}{14}{15} \\			% 40 h
+\ganttbar{Dokumentation}{14}{17} \\				% 80 h
+\ganttmilestone{Präsentation}{17}
+\end{ganttchart}
+
+\subsection{Arbeitsbelastung}
+\begin{tabular}{|l|c|c|c|}
+\firsthline
+ & Arbeitsstunden & Puffer & Verplant \\\hline
+ Max Mustermann & 176 & 4 & \unit[98]{\%} \\\hline
+ Bea Beispiel & 176 & 4 & \unit[98]{\%} \\\lasthline
+\end{tabular}
+
+\end{document}
+
+
