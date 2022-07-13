@@ -37,10 +37,17 @@ def animate(i):
     else:
         ax.cla()
         ax.set_title("Normal Verteilung")
-        hist=ax.hist(np.random.normal(size=newscale2) if var2.get()==0 else rand1[:newscale2],bins=newscale1)
+        datemsatz1=np.random.normal(size=newscale2) if var2.get()==0 else rand1[:newscale2]
+        #print
+        hist=ax.hist(datemsatz1,bins=newscale1,label="Histogram")
+
+        ax.axvspan(datemsatz1.mean()-datemsatz1.std(),datemsatz1.mean()+datemsatz1.std(), ymax=hist[0].max() ,alpha=0.5, color='red',label="Vertrauensinterval")
+        #ax.fill_between()
+        ax.legend(loc="upper right")
         ax2.cla()
         ax2.set_title("Student T Verteilung")
-        hist=ax2.hist(np.random.standard_t(newscale3,size=newscale2) if var2.get()==0 else rand2[:newscale2],bins=newscale1)
+        datemsatz2=np.random.standard_t(newscale3,size=newscale2) if var2.get()==0 else rand2[:newscale2]
+        hist=ax2.hist(datemsatz2,bins=newscale1)
         oldscale1=newscale1
         oldscale2=newscale2
         oldscale3=newscale3
