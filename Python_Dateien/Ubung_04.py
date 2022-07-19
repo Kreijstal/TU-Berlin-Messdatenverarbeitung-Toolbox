@@ -3,13 +3,13 @@ import numpy as np
 import control
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as Tk
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import svg.path
 import control.matlab
 import yaml
 
+plt.ioff()
 try:
    opts, args = getopt.getopt(sys.argv[1:],"r",["render"])
 except getopt.GetoptError:
@@ -53,7 +53,7 @@ control.bode_plot(sys)
 canvas2 = FigureCanvasTkAgg(plt.gcf(), master=root)
 canvas2.get_tk_widget().grid(column=0,row=11,columnspan = 1, rowspan = 7, padx =0, pady = 0)
 
-ani=animation.FuncAnimation(plt.gcf(), lambda a:None, [1], interval=100,blit=False)
+#ani=animation.FuncAnimation(plt.gcf(), lambda a:None, [1], interval=100,blit=False)
 def onVarChange():
     #print(([w_s^2], [1, w_s* z,w_s^2]))
     sys = control.tf([w_s^2], [1, w_s* z,w_s^2]) 
@@ -61,17 +61,23 @@ def onVarChange():
     plt.figure("Bode")
     plt.clf()
     control.bode_plot(sys)
+    plt.gcf().canvas.draw()
+    plt.gcf().canvas.flush_events()
     plt.figure("Bode")
     plt.title("Bode plot")
     plt.figure("pzmap")
     plt.clf()
     control.pzmap(sys)
+    plt.gcf().canvas.draw()
+    plt.gcf().canvas.flush_events()
     plt.figure("step_response")
     plt.cla()
     t,y=control.step_response(sys)
     plt.plot(t,y)
     plt.title("Sprungantwort")
     plt.grid()
+    plt.gcf().canvas.draw()
+    plt.gcf().canvas.flush_events()
     Tk.Label(root,text=yaml.dump({k: float(v) for k, v in control.matlab.stepinfo(sys).items()})).grid(column=2,row=0, rowspan = 7)
     #canvas2.get_tk_widget().grid_remove()
     #canvas2 = FigureCanvasTkAgg(plt.gcf(), master=root)
@@ -95,15 +101,16 @@ fig = plt.figure("pzmap",figsize=(6,5))
 control.pzmap(sys)
 canvas3 = FigureCanvasTkAgg(fig, master=root)
 canvas3.get_tk_widget().grid(column=1,row=11,columnspan = 1, rowspan = 7, padx = 0, pady = 0)
-ani2=animation.FuncAnimation(plt.gcf(), lambda a:None, [1], interval=100,blit=False)
+#ani2=animation.FuncAnimation(plt.gcf(), lambda a:None, [1], interval=100,blit=False)
 fig2 = plt.figure("step_response",figsize=(5,5))
 canvas4 = FigureCanvasTkAgg(fig2, master=root)
 canvas4.get_tk_widget().grid(column=2,row=11,columnspan = 1, rowspan = 7, padx = 0, pady = 0)
-ani3=animation.FuncAnimation(plt.gcf(), lambda a:None, [1], interval=100,blit=False)
+#ani3=animation.FuncAnimation(plt.gcf(), lambda a:None, [1], interval=100,blit=False)
 t,y=control.step_response(sys)
 plt.title("Sprungantwort")
 plt.plot(t,y)
 plt.grid()
+#plt.ioff()
 #Tk.Label(root,text="#samples").grid(column=2,row=2)
 #scale2.grid(column=2,row=3)
 #Tk.Label(root,text="Freiheitsgrad von student T").grid(column=2,row=4)
@@ -123,4 +130,6 @@ plt.grid()
 #        blit=False)
 root.title("Übung 4 MT1")
 root.mainloop()
+plt.close()
+plt.close()
 plt.close()
