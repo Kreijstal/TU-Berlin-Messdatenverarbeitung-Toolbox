@@ -24,10 +24,10 @@ Betreuer: Daniel Thomanek
 
 ## Aufgabenverteilung
 
-- [ ] Übung 01 - Statistik - @kreijstal
-- [ ] Übung 02 - Regression & Interpolation - @borismaurer
+- [x] Übung 01 - Statistik - @kreijstal
+- [x] Übung 02 - Regression & Interpolation - @borismaurer
 - [ ] Übung 03 - Statische Eigenschaften von Messystemen - @eriktroendle
-- [ ] Übung 04 - Dynamische Eigenschaften von Messystemen - @kreijstal
+- [x] Übung 04 - Dynamische Eigenschaften von Messystemen - @kreijstal
 - [ ] Übung 05 - Digitale Messdatenerfassung - @eriktroendle
 - [ ] Übung 06 - Leistungsmessung - @all
 - [ ] Übung 07 - Messbrücken - @borismaurer
