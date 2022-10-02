@@ -41,7 +41,7 @@ def animate(i):
         #print
         hist=ax.hist(datemsatz1,bins=newscale1,label="Histogram")
 
-        ax.axvspan(datemsatz1.mean()-datemsatz1.std(),datemsatz1.mean()+datemsatz1.std(), ymax=hist[0].max() ,alpha=0.5, color='red',label="Vertrauensinterval")
+        ax.axvspan(datemsatz1.mean()-datemsatz1.std(),datemsatz1.mean()+datemsatz1.std(), ymax=hist[0].max() ,alpha=0.5, color='red',label="Vertrauensinterval 1$\sigma$, 68,3%")
         #ax.fill_between()
         ax.legend(loc="upper right")
         ax2.cla()
