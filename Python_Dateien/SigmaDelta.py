@@ -6,7 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
+'''
+Das folgende ist eine Sigma delta Umsetzer
+'''
 fig = plt.Figure(figsize=(9,9))  
 x=[]
 m=1
@@ -45,10 +47,11 @@ def animate(i):
     #ax.legend(loc="upper right")
     ax.cla()
     ax2.set_title("Student T Verteilung")
-    ax.plot(x)
+    ax.plot(x,label="eingabe signal")
     #ax.plot(xintlist)
-    ax.plot(errlist)
-    ax.plot(errcumlist)
+    ax.plot(errlist,label="Fehler")
+    ax.plot(errcumlist,label="kumulativer Fehler")
+    ax.legend()
     ax2.cla()
     ax2.step(np.arange(0,len(hm)),hm)
 
@@ -79,5 +82,5 @@ ax2 = fig.add_subplot(212)
 fig.tight_layout() 
 ani=animation.FuncAnimation(fig, animate, np.arange(1, 64), interval=100,
         blit=False)
-root.title("Übung 1 MT1")
+root.title("Sigma Delta Umsetzer")
 root.mainloop()
