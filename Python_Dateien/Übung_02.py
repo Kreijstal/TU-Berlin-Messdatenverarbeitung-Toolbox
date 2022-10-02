@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 20 13:37:14 2022
+Created 2022
 
-@author: Boris
+Für eine Messreihe wird jeweils die Regression, lineare Interpolation und spline
+Interpolation geplottet und die geschätzten Werte für eine unbekannte Größe ausgegeben.
+
+Beispielweise würde hier der Wiederstand in abhängigkeit er Temperatur approximiert und ausgerechnet 
+
+@author: Datenschutz bitte.
 """
 import tkinter as tk
 import numpy as np
@@ -17,12 +22,29 @@ a=None
 b=None
 root= tk.Tk()
 def sortinputandoutput(x,y):
+    """Sortiert die input und output damit wir linear interpolieren können
+
+    Args:
+        x (Array of int32): x Werte, Werte vom ersten array 
+        y (Array of int32): y Werte, Werte vom zweiten array 
+
+    Returns:
+        list: beinhaltet die x und y Werte 
+    """    ""
     l=list(zip(x,y))
     l.sort(key=lambda a:a[0])
     return list(zip(*l))
 
 def makeline(x,y):
-    """returns a,b"""
+    """Erstellt eine lineare approximation zwischen zwei Punkten 
+
+    Args:
+        x (Array of int32): x Wert
+        y (Array of int32): y Wert
+
+    Returns:
+        (float,float): Paramater für die Funktion y=ax+b
+    """    ""
     N=len(x)
     a_numerator=N*np.sum(x*y)-(np.sum(y)*np.sum(x))
     a_denominator=N*np.sum(x**2)-(np.sum(x))**2
@@ -34,28 +56,48 @@ def makeline(x,y):
 
 
 def Regression(x,y):
+    """Regression für eine beliegige Messreihe
+    Args:
+        x (Array of int32): _description_
+        y (Array of int32): _description_
+    """    ""
     a,b=makeline(x,y)
     a=float("{:.3f}".format(a))
-    text1.set(a)
+    y_antwort_text.set(a)
     b=float("{:.3f}".format(b))
-    text2.set(b)
-    xvl = np.linspace(min(x), max(x), 100)
+    x_antworten_antworten.set(b)
+    xvl = np.linspace(min(x), max(x), 10000)
     yvl=a*xvl+b
     plot1.plot(xvl,yvl,color='blue')
     plot1.legend(['Messdaten','Lineare Regression'])
     plot1.set_title('Lineare Regression')
-    [x.grid() for x in [result_label,result_labela,result_labelb,resultb, result_labely, result_labelx,  resulta1, resulta2, resulta3]]
+    plot1.grid()
+    [x.grid() for x in [result_label,result_labela,result_labelb,resultb, result_labely, result_labelx,  resulta1, resultVonDerYvariable, resultVonDerXVariabeln]]
     
 def remove():
-    [x.grid_remove() for x in [result_label,result_labela,result_labelb,resultb, result_labely, result_labelx,  resulta1, resulta2, resulta3]]
+    [x.grid_remove() for x in [result_label,result_labela,result_labelb,resultb, result_labely, result_labelx,  resulta1, resultVonDerYvariable, resultVonDerXVariabeln]]
     
 def Lineare_interpolation(x,y):
+    """Lineare Interpolation für eine beliegige Messreihe
+
+
+    Args:
+        x (Array of int32): x Werte 
+        y (Array of int32): y Werte 
+    """    ""
     remove()
     plot1.plot(x, y)
     plot1.legend(['Messdaten','Lineare Interpolation'])
     plot1.set_title('Lineare Interpolatione')
+    plot1.grid()
     
 def Spline(x,y):
+    """Spline Interpolation für eine beliegige Messreihe
+
+    Args:
+        x (Array of int32): x Werte 
+        y (Array of int32): y Werte
+    """    ""
     remove()
     spl = ip.CubicSpline(x, y)
     x_sp = np.linspace(x.min(), x.max(), 10000)
@@ -78,10 +120,8 @@ plot1.set_ylabel('y [Widerstand in \u03A9]')
 
 
 def res():
-    ''' Funktion wird aufgerufen um den Widerstand für bestimtte Temperatur ausgerchent
-    
-
-    '''
+    """Schätzung von Werten für eine unbekannte Größe
+    """  
     #Wir lesen die Eingabe temperatur 
     xvltemp=float(num11.get())
     if s==liste_reg_and_interp[0]:
@@ -102,7 +142,7 @@ def res():
             y_for_temp='Fail'
             #return "FAIL"
         else:
-            print(x0)
+            #print(x0)
             x_variabel_fuer_anfang_Lin_interp=np.max(list(filter(lambda n:n<x0, x)))
             x_variabel_fuer_ende_Lin_interp=np.min(list(filter(lambda n:n>=x0, x)))
             x_und_y_gezippt=tuple(zip(x,list(y)))
@@ -153,12 +193,14 @@ s=liste_reg_and_interp[0]
 def drop_down_change(dp):
     global s
     s=dp
-    click()
+    plotAktualizieren()
  
-def click():
+def plotAktualizieren():
+    """Der plot im Fenster wird aktualisiert
+    """    
     plot1.clear()
     global x,y,N
-    x=np.array([int(num1.get()),int(num2.get()),int(num3.get()),int(num4.get()),int(num5.get())])
+    x=np.array([float(number_array[0].get()),float(number_array[1].get()),float(number_array[2].get()),float(number_array[3].get()),float(number_array[4].get())])
     y=np.array([float(num6.get()),float(num7.get()),float(num8.get()),float(num9.get()),float(num10.get())])
     plot1.scatter(x,y,color='red')
     plot1.set_xlabel('x [Temperatur in °C]') 
@@ -173,18 +215,20 @@ def click():
     figure3.canvas.draw()
     figure3.canvas.flush_events()
   
-
-text1=tk.StringVar()
-text2=tk.StringVar()
+widgetObjects = {"result_label":{"name":"result_label",
+                                 "text":"Results : ",
+                                "variable":None}}
+y_antwort_text=tk.StringVar()
+x_antworten_antworten=tk.StringVar()
 text3=tk.StringVar()
 #dropdown_menu=tk.StringVar(root)
 #dropdown_menu.set(liste_reg_and_interp[0])
 
 root.geometry("800x600")
 root.title('Übung 2')  
-Corona=tk.StringVar()
-Corona.set(liste_reg_and_interp[0])
-menu= tk.OptionMenu(root, Corona, *liste_reg_and_interp,command=drop_down_change)
+Corona_rules=tk.StringVar()
+Corona_rules.set(liste_reg_and_interp[0])
+menu= tk.OptionMenu(root, Corona_rules, *liste_reg_and_interp,command=drop_down_change)
 menu.config(width=30, font=('Times New Roman', 9))
 menu.grid(row=0, column=10)
 
@@ -194,40 +238,32 @@ result_label=tk.Label(root, text="Results : ")
 result_label.grid(row=1, column=11)
 result_labela=tk.Label(root, text="a= ")
 result_labela.grid(row=2, column=12)
-resulta1=tk.Label(root, text="", textvariable=text1)
+resulta1=tk.Label(root, text="", textvariable=y_antwort_text)
 resulta1.grid(row=2,column=13)
 result_labelb=tk.Label(root, text="b= ")
 result_labelb.grid(row=3, column=12)
-resultb=tk.Label(root, text="", textvariable=text2)
+resultb=tk.Label(root, text="", textvariable=x_antworten_antworten)
 resultb.grid(row=3,column=13)
 result_labely=tk.Label(root, text="y= ")
 result_labely.grid(row=4, column=12)
-resulta2=tk.Label(root, text="", textvariable=text1)
-resulta2.grid(row=4,column=13)
+resultVonDerYvariable=tk.Label(root, text="", textvariable=y_antwort_text)
+resultVonDerYvariable.grid(row=4,column=13)
 result_labelx=tk.Label(root, text="x + ")
 result_labelx.grid(row=4, column=14)
-resulta3=tk.Label(root, text="", textvariable=text2)
-resulta3.grid(row=4,column=15)
+resultVonDerXVariabeln=tk.Label(root, text="", textvariable=x_antworten_antworten)
+resultVonDerXVariabeln.grid(row=4,column=15)
 inputValuesTkx = tk.Label(root, text="Input values 1 (x) ")
 inputValuesTkx.grid(row=0, column=0)
 inputValuesTky = tk.Label(root, text="Input values 2 (y) ")
 inputValuesTky.grid(row=6, column=0)
 
-num1 = tk.Entry(root,justify='center')
-num1.grid(row=1, column=0,pady=4) 
-num1.insert(tk.END, '1') 
-num2 = tk.Entry(root,justify='center')
-num2.grid(row=2, column=0,pady=4)
-num2.insert(tk.END, '2')   
-num3 = tk.Entry(root,justify='center')
-num3.grid(row=3, column=0,pady=4)  
-num3.insert(tk.END, '3') 
-num4 = tk.Entry(root,justify='center')
-num4.grid(row=4, column=0,pady=4) 
-num4.insert(tk.END, '4') 
-num5 = tk.Entry(root,justify='center')
-num5.grid(row=5, column=0,pady=4)  
-num5.insert(tk.END, '5') 
+number_array=[]
+for i in range(5):
+    num= tk.Entry(root,justify='center')
+    num.grid(row=i, column=0,pady=4) 
+    num.insert(tk.END, str(i)) 
+    number_array.append(num)
+
 num6 = tk.Entry(root,justify='center')
 num6.grid(row=7, column=0)  
 num6.insert(tk.END, str(random.randrange(0, 20))) 
@@ -244,7 +280,7 @@ num10 = tk.Entry(root,justify='center')
 num10.grid(row=11, column=0)
 num10.insert(tk.END, str(random.randrange(0, 100))) 
 
-button= tk.Button(root, text="Calculate", command=lambda:[click()])
+button= tk.Button(root, text="Calculate", command=lambda:[plotAktualizieren()])
 button.grid(row=12, column=0)  
 
 
@@ -252,7 +288,7 @@ emp=tk.Label(root, text="Temperature in °C ").grid(row=13, column=0)
 
 num11 = tk.Entry(root,justify='center')
 num11.grid(row=14, column=0)
-num11.insert(tk.END, '17') 
+num11.insert(tk.END, '3') 
 button2 = tk.Button(root,text="Calculate Resistance",command=res)
 button2.grid(row=15, column=0)
 
