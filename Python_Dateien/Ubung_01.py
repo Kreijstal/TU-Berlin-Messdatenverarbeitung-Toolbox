@@ -33,7 +33,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 
-fig = plt.Figure(figsize=(5,5))  
+fig = plt.Figure(figsize=(8,8))  
 oldscale1=0
 oldscale2=0
 oldscale3=0
