@@ -129,66 +129,49 @@ def res():
         Das ist Lineare regression für eine bestimmte Temperatur
         '''
         a,b=makeline(x,y)
-        y_for_temp=a*xvltemp+b
-        y_for_temp=float("{:.3f}".format(y_for_temp))
+        ergebnisse=a*xvltemp+b
+        ergebnisse=float("{:.3f}".format(ergebnisse))
     elif s==liste_reg_and_interp[1]:
         '''
         Das ist linear interpolation für eine bestimmte Temperatur
         '''
-        x0=xvltemp
-        xmin=min(x)
-        xmax=max(x)
-        if x0<xmin or x0>xmax:
-            y_for_temp='Fail'
-            #return "FAIL"
-        else:
-            #print(x0)
-            x_variabel_fuer_anfang_Lin_interp=np.max(list(filter(lambda n:n<x0, x)))
-            x_variabel_fuer_ende_Lin_interp=np.min(list(filter(lambda n:n>=x0, x)))
-            x_und_y_gezippt=tuple(zip(x,list(y)))
-            #print(list(x_und_y_gezippt))
-            x_und_y_gedict=dict(list(x_und_y_gezippt))
-            y_wert_1=x_und_y_gedict[x_variabel_fuer_anfang_Lin_interp]
-            y_wert_2=x_und_y_gedict[x_variabel_fuer_ende_Lin_interp]
-
-            x_wert_1=x_variabel_fuer_anfang_Lin_interp
-            x_wert_2=x_variabel_fuer_ende_Lin_interp    
-            #print(x_wert_1,x_wert_2,y_wert_1,y_wert_2)
-            a,b=makeline(np.array([x_wert_1,x_wert_2]), np.array([y_wert_1,y_wert_2]))
-            y_for_temp=a*xvltemp+b
-            y_for_temp=float("{:.3f}".format(y_for_temp))
+        #x0=xvltemp
+        ergebnisse=findValue(x,xvltemp,y)
     elif s==liste_reg_and_interp[2]:
         '''
         Das ist cubische regression für eine bestimmte Temperatur
         '''
-        x0=xvltemp
         spl = ip.CubicSpline(x, y)
         x_sp = np.linspace(x.min(), x.max(), 1000)
         y_sp = spl(x_sp)
-        xmin=min(x_sp)
-        xmax=max(x_sp)
-        if x0<xmin or x0>xmax:
-            y_for_temp='Fail'
-            #return "FAIL"
-        else:
-            print(x0)
-            x_variabel_fuer_anfang_Lin_interp=np.max(list(filter(lambda n:n<x0, x_sp)))
-            x_variabel_fuer_ende_Lin_interp=np.min(list(filter(lambda n:n>=x0, x_sp)))
-            x_und_y_gezippt=tuple(zip(x_sp,list(y_sp)))
-            #print(list(x_und_y_gezippt))
-            x_und_y_gedict=dict(list(x_und_y_gezippt))
-            y_wert_1=x_und_y_gedict[x_variabel_fuer_anfang_Lin_interp]
-            y_wert_2=x_und_y_gedict[x_variabel_fuer_ende_Lin_interp]
+        ergebnisse=findValue(x_sp,xvltemp,y_sp)
+    text3.set(ergebnisse)
 
-            x_wert_1=x_variabel_fuer_anfang_Lin_interp
-            x_wert_2=x_variabel_fuer_ende_Lin_interp    
-            #print(x_wert_1,x_wert_2,y_wert_1,y_wert_2)
-            a,b=makeline(np.array([x_wert_1,x_wert_2]), np.array([y_wert_1,y_wert_2]))
-            y_for_temp=a*xvltemp+b
-            y_for_temp=float("{:.3f}".format(y_for_temp))
-    text3.set(y_for_temp)
-        
-          
+def findValue(x,x0,y):
+    xmin=min(x)
+    xmax=max(x)
+    if x0<xmin or x0>xmax:
+        y_for_temp='Fail'
+        #return "FAIL"
+    else:
+        #print(x0)
+        x_variabel_fuer_anfang_Lin_interp=np.max(list(filter(lambda n:n<x0, x)))
+        x_variabel_fuer_ende_Lin_interp=np.min(list(filter(lambda n:n>=x0, x)))
+        x_und_y_gezippt=tuple(zip(x,list(y)))
+        #print(list(x_und_y_gezippt))
+        x_und_y_gedict=dict(list(x_und_y_gezippt))
+        y_wert_1=x_und_y_gedict[x_variabel_fuer_anfang_Lin_interp]
+        y_wert_2=x_und_y_gedict[x_variabel_fuer_ende_Lin_interp]
+
+        x_wert_1=x_variabel_fuer_anfang_Lin_interp
+        x_wert_2=x_variabel_fuer_ende_Lin_interp    
+        #print(x_wert_1,x_wert_2,y_wert_1,y_wert_2)
+        a,b=makeline(np.array([x_wert_1,x_wert_2]), np.array([y_wert_1,y_wert_2]))
+        y_for_temp=a*x0+b
+        y_for_temp=float("{:.3f}".format(y_for_temp))    
+        return y_for_temp
+
+
 s=liste_reg_and_interp[0]   
 def drop_down_change(dp):
     global s

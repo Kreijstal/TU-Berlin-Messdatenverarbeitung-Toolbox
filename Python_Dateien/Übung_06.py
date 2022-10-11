@@ -1,1 +1,9 @@
-34,34,34,13,10,13,10,34,34,34
+# -*- coding: utf-8 -*-
+"""
+Created on 2022
+
+6. Leistungsmessung
+• Anzeige der Leistungskurven für einen einstellbaren Verbraucher, linear oder nichtlinear mit Oberwellen.
+
+@author: Datenschutz bitte.
+"""
