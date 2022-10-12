@@ -26,9 +26,9 @@ Betreuer: Daniel Thomanek
 
 - [x] Übung 01 - Statistik - @kreijstal
 - [x] Übung 02 - Regression & Interpolation - @borismaurer
-- [ ] Übung 03 - Statische Eigenschaften von Messystemen - @eriktroendle
+- [X] Übung 03 - Statische Eigenschaften von Messystemen - @eriktroendle
 - [x] Übung 04 - Dynamische Eigenschaften von Messystemen - @kreijstal
-- [ ] Übung 05 - Digitale Messdatenerfassung - @eriktroendle
+- [X] Übung 05 - Digitale Messdatenerfassung - @eriktroendle
 - [ ] Übung 06 - Leistungsmessung - @all
 - [ ] Übung 07 - Messbrücken - @borismaurer
 
