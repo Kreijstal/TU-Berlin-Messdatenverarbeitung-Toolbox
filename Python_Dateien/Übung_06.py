@@ -50,7 +50,8 @@ import itertools
 
 window_title = "Übung 06 - Leistungsimulation"
 
-
+def clamp(minimum, x, maximum):
+    return max(minimum, min(x, maximum))
 
 
 class TKWindow(tk.Tk):
@@ -106,8 +107,9 @@ class TKWindow(tk.Tk):
                 self.intU=self.intU-self.spannung.pop(0)
                 l=self.time.pop(0)
                 self.current.pop(0)
-                print(("left",l,"right",i))
-                ax.set_xlim(left= l,right=i)
+                #print(("left",l,"right",i))
+                ax.set_xlim(left=l,right=i)
+                ax.set_ylim(ymin=min(np.min(self.spannung),np.min(self.current)),ymax=max(np.max(self.spannung),np.max(self.current)))
             du=u-(self.spannung[-1] if len(self.spannung)>0 else 0)
             self.intU=u+self.intU
             self.spannung.append(u)
@@ -129,11 +131,14 @@ class TKWindow(tk.Tk):
 
     def getCurrent(self,time,u,du,U):
         try:
-            self.impedanz=eval("lambda u,t,du,U:"+self.dictWidgets["Impedanz"].get())(u,time,du,U)
+            impedanz=eval("lambda u,t,du,U:"+self.dictWidgets["Impedanz"].get())(u,time,du,U)
+            assert(impedanz!=0)
+            self.impedanz=float(impedanz)
             self.dictWidgets["Impedanz"].config(bg="white")
         except Exception as e:
             self.dictWidgets["Impedanz"].config(bg="red")
             #if self.impedanz
+        #print(("Impedanz:",self.impedanz))
         return u/self.impedanz
 
 
