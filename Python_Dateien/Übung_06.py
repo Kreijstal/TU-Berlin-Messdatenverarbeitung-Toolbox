@@ -62,8 +62,11 @@ class TKWindow(tk.Tk):
     amplitude=1
     frequency=1
     spannung=[]
+    spannungableitung=[]
+    spanningintegral=[]
     time=[]
     current=[]
+    intU=0
     impedanz=1
 
     def createWidgets(self):
@@ -100,14 +103,16 @@ class TKWindow(tk.Tk):
             ax=self.axes[0]
             u=self.dictWidgets["someFunction"](self.dictWidgets["amplitude"].get(),self.dictWidgets["frequency"].get(),i)
             if len(self.spannung)>100:
-                self.spannung.pop(0)
+                self.intU=self.intU-self.spannung.pop(0)
                 l=self.time.pop(0)
                 self.current.pop(0)
                 print(("left",l,"right",i))
                 ax.set_xlim(left= l,right=i)
+            du=u-(self.spannung[-1] if len(self.spannung)>0 else 0)
+            self.intU=u+self.intU
             self.spannung.append(u)
             self.time.append(i)
-            self.current.append(self.getCurrent(i,u))
+            self.current.append(self.getCurrent(i,u,du,self.intU))
             ax.plot(self.time,self.spannung,color="blue")
             ax.plot(self.time,self.current,color="orange")
         pass
@@ -122,14 +127,14 @@ class TKWindow(tk.Tk):
         a.set("Funktion Auswahl")
         return self.dictWidgets[name]
 
-    def getCurrent(self,time,u):
+    def getCurrent(self,time,u,du,U):
         try:
-            self.impedanz=eval("lambda u,t:"+self.dictWidgets["Impedanz"].get())(u,time)
+            self.impedanz=eval("lambda u,t,du,U:"+self.dictWidgets["Impedanz"].get())(u,time,du,U)
             self.dictWidgets["Impedanz"].config(bg="white")
         except Exception as e:
             self.dictWidgets["Impedanz"].config(bg="red")
-            if(self.impedanz)
-        return self.currrent
+            #if self.impedanz
+        return u/self.impedanz
 
 
 

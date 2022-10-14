@@ -61,12 +61,15 @@ def animate(i):
         datemsatz1=np.random.normal(size=newscale2) if var2.get()==0 else zuffaligeDatenMitNormaleVerteilung[:newscale2]
         #print
         hist=ax.hist(datemsatz1,bins=newscale1,label="Histogram")
+        ax.set_ylabel('Häufigkeit')
 
         ax.axvspan(datemsatz1.mean()-datemsatz1.std(),datemsatz1.mean()+datemsatz1.std(), ymax=hist[0].max() ,alpha=0.5, color='red',label="Vertrauensinterval 1$\sigma$, 68,3%")
         #ax.fill_between()
         ax.legend(loc="upper right")
         ax2.cla()
         ax2.set_title("Student T Verteilung")
+        ax2.set_ylabel('Häufigkeit')
+        ax2.set_xlabel('Zufallwerte')
         datemsatz2=np.random.standard_t(newscale3,size=newscale2) if var2.get()==0 else zuffaligeDatenMitTstudentverteilung[:newscale2]
         hist=ax2.hist(datemsatz2,bins=newscale1)
         oldscale1=newscale1
