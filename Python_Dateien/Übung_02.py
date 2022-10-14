@@ -123,7 +123,12 @@ def res():
     """Schätzung von Werten für eine unbekannte Größe
     """  
     #Wir lesen die Eingabe temperatur 
-    xvltemp=float(num11.get())
+    try:    
+        xvltemp=float(number_array[10].get())
+        number_array[10].config(bg="white")
+    except Exception as e:
+        number_array[10].config(bg="red")
+        return
     if s==liste_reg_and_interp[0]:
         '''
         Das ist Lineare regression für eine bestimmte Temperatur
@@ -183,8 +188,19 @@ def plotAktualizieren():
     """    
     plot1.clear()
     global x,y,N
-    x=np.array([float(number_array[0].get()),float(number_array[1].get()),float(number_array[2].get()),float(number_array[3].get()),float(number_array[4].get())])
-    y=np.array([float(num6.get()),float(num7.get()),float(num8.get()),float(num9.get()),float(num10.get())])
+    values=[]
+    for i in range(10):
+        try:
+            values.append(float(number_array[i].get()))
+            number_array[i].config(bg="white")
+        except Exception as e:
+            number_array[i].config(bg="red")
+            return
+
+    
+    x=np.array(values[0:5])
+    y=np.array(values[5:10])
+   
     plot1.scatter(x,y,color='red')
     plot1.set_xlabel('x [Temperatur in °C]') 
     plot1.set_ylabel('y [Widerstand in \u03A9]') 
@@ -246,22 +262,11 @@ for i in range(5):
     num.grid(row=i+1, column=0,pady=4) 
     num.insert(tk.END, str(i)) 
     number_array.append(num)
+for i in range(5,10):
+    number_array.append(tk.Entry(root,justify='center'))
+    number_array[i].grid(row=i+2, column=0)  
+    number_array[i].insert(tk.END, str(random.randrange(0, (i-4)*10))) 
 
-num6 = tk.Entry(root,justify='center')
-num6.grid(row=7, column=0)  
-num6.insert(tk.END, str(random.randrange(0, 20))) 
-num7 = tk.Entry(root,justify='center')
-num7.grid(row=8, column=0)  
-num7.insert(tk.END, str(random.randrange(0, 20))) 
-num8 = tk.Entry(root,justify='center')
-num8.grid(row=9, column=0)  
-num8.insert(tk.END, str(random.randrange(0, 20))) 
-num9 = tk.Entry(root,justify='center')
-num9.grid(row=10, column=0) 
-num9.insert(tk.END, str(random.randrange(0, 20))) 
-num10 = tk.Entry(root,justify='center')
-num10.grid(row=11, column=0)
-num10.insert(tk.END, str(random.randrange(0, 100))) 
 
 button= tk.Button(root, text="Calculate", command=lambda:[plotAktualizieren()])
 button.grid(row=12, column=0)  
@@ -269,9 +274,9 @@ button.grid(row=12, column=0)
 
 emp=tk.Label(root, text="Temperature in °C ").grid(row=13, column=0)
 
-num11 = tk.Entry(root,justify='center')
-num11.grid(row=14, column=0)
-num11.insert(tk.END, '3') 
+number_array.append(tk.Entry(root,justify='center'))
+number_array[10].grid(row=14, column=0)
+number_array[10].insert(tk.END, '3') 
 button2 = tk.Button(root,text="Calculate Resistance",command=res)
 button2.grid(row=15, column=0)
 
