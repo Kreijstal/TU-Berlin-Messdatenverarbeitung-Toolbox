@@ -22,6 +22,7 @@ class Switch(object):
             "breaks": breaks
         })
     
+
     def case(self, value):
         # Speichert die Zwischenergebnisse        
         results = []
@@ -47,6 +48,7 @@ import matplotlib.animation as animation
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import itertools
+import scipy
 
 window_title = "Übung 06 - Leistungsimulation"
 
@@ -104,15 +106,18 @@ class TKWindow(tk.Tk):
             ax=self.axes[0]
             u=self.dictWidgets["someFunction"](self.dictWidgets["amplitude"].get(),self.dictWidgets["frequency"].get(),i)
             if len(self.spannung)>100:
-                self.intU=self.intU-self.spannung.pop(0)
+                self.spannung.pop(0)#self.intU=self.intU-self.spannung.pop(0)
+
                 l=self.time.pop(0)
                 self.current.pop(0)
                 #print(("left",l,"right",i))
                 ax.set_xlim(left=l,right=i)
                 ax.set_ylim(ymin=min(np.min(self.spannung),np.min(self.current)),ymax=max(np.max(self.spannung),np.max(self.current)))
             du=u-(self.spannung[-1] if len(self.spannung)>0 else 0)
-            self.intU=u+self.intU
+            #self.intU=u+self.intU
             self.spannung.append(u)
+            self.intU=np.sum(self.spannung)
+            #assert UU==self.intU,"U=%s,U=%s"%(UU,self.intU)
             self.time.append(i)
             self.current.append(self.getCurrent(i,u,du,self.intU))
             ax.plot(self.time,self.spannung,color="blue")
@@ -158,9 +163,13 @@ class TKWindow(tk.Tk):
             this.dictWidgets["someFunction"]=sine
         def sine(amplitude,frequency,time):
             return amplitude*np.sin(time*2*np.pi*frequency)
+        def attachsawtooth():
+            this.dictWidgets["someFunction"]=sawtooth
+        def sawtooth(amplitude,frequency,time):
+            return amplitude*scipy.signal.sawtooth(time*2*np.pi*frequency)
         case_1 = attachSine
         case_2 = lambda : print("boris")
-        case_3 = lambda : print("load immediate")
+        case_3 = attachsawtooth
         case_4 = lambda : print("load swa")
         switch.add_case("sine", case_1, True)
         switch.add_case("triangle", case_2, True)
