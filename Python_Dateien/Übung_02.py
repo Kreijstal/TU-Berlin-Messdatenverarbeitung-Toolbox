@@ -243,7 +243,7 @@ inputValuesTky.grid(row=6, column=0)
 number_array=[]
 for i in range(5):
     num= tk.Entry(root,justify='center')
-    num.grid(row=i, column=0,pady=4) 
+    num.grid(row=i+1, column=0,pady=4) 
     num.insert(tk.END, str(i)) 
     number_array.append(num)
 
