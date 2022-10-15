@@ -115,8 +115,8 @@ plot1 = figure3.add_subplot(111)
 scatter3 = FigureCanvasTkAgg(figure3, root) 
 scatter3.get_tk_widget().grid(row=6, column=3,columnspan = 100, rowspan = 24, padx = 0, pady = 0)
 #ani=animation.FuncAnimation(plt.gcf(), lambda a:None, [1], interval=100,blit=False)
-plot1.set_xlabel('x [Temperatur in °C]') 
-plot1.set_ylabel('y [Widerstand in \u03A9]') 
+plot1.set_xlabel('x [z.B. Temperatur in °C]') 
+plot1.set_ylabel('y [z.B. Widerstand in \u03A9]') 
 
 
 def res():
@@ -202,8 +202,8 @@ def plotAktualizieren():
     y=np.array(values[5:10])
    
     plot1.scatter(x,y,color='red')
-    plot1.set_xlabel('x [Temperatur in °C]') 
-    plot1.set_ylabel('y [Widerstand in \u03A9]') 
+    plot1.set_xlabel('x [z.B. Temperatur in °C]') 
+    plot1.set_ylabel('y [z.B. Widerstand in \u03A9]') 
     x,y=[np.array(t) for t in sortinputandoutput(x,y)]
     if s==liste_reg_and_interp[0]:
         Regression(x,y)
@@ -272,12 +272,12 @@ button= tk.Button(root, text="Calculate", command=lambda:[plotAktualizieren()])
 button.grid(row=12, column=0)  
 
 
-emp=tk.Label(root, text="Temperature in °C ").grid(row=13, column=0)
+emp=tk.Label(root, text="Unbekannte Größe ").grid(row=13, column=0)
 
 number_array.append(tk.Entry(root,justify='center'))
 number_array[10].grid(row=14, column=0)
 number_array[10].insert(tk.END, '3') 
-button2 = tk.Button(root,text="Calculate Resistance",command=res)
+button2 = tk.Button(root,text="Calculate 2",command=res)
 button2.grid(row=15, column=0)
 
 result_labely2=tk.Label(root, text="y= ")
