@@ -108,11 +108,11 @@ class TKWindow(tk.Tk):
                 #print(("left",l,"right",i))
                 ax.set_xlim(left=l,right=i)
                 self.axes[1].set_xlim(left=l,right=i)
-                l=max(-min(self.spannung),max(self.spannung))
-                ll=max(-min(self.current),max(self.current))
+                l=max(-min(self.spannung),max(self.spannung))*1.05
+                ll=max(-min(self.current),max(self.current))*1.05
                 ax.set_ylim(ymin=-l,ymax=l)
                 self.axes[2].set_ylim(ymin=-ll,ymax=ll)
-                self.axes[1].set_ylim(ymin=min(0,min(self.power)),ymax=max(0,max(self.power)))
+                self.axes[1].set_ylim(ymin=min(0,min(self.power)*1.01),ymax=max(0,max(self.power)*1.01))
             du=(u-(self.spannung[-1] if len(self.spannung)>0 else 0))/0.001
             #self.intU=u+self.intU
             self.spannung.append(u)
