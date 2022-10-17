@@ -64,7 +64,7 @@ class TKWindow(tk.Tk):
     spanningintegral=[]
     time=[]
     current=[]
-    intU=0
+    intU=[0,0,0]
     impedanz=1
 
     def createWidgets(self):
@@ -94,32 +94,38 @@ class TKWindow(tk.Tk):
         self.mainloop()
     
     def animate(self, i):
+        self.frequency=self.dictWidgets["frequency"].get()
+        self.amplitude=self.dictWidgets["amplitude"].get()
         for ax in self.axes:
             for artist in ax.lines + ax.collections:
                 artist.remove()
         if "someFunction" in self.dictWidgets:
             ax=self.axes[0]
-            u=self.dictWidgets["someFunction"](self.dictWidgets["amplitude"].get(),self.dictWidgets["frequency"].get(),i)
+            u=self.dictWidgets["someFunction"](self.amplitude,self.frequency,i)
             if len(self.spannung)>100:
-                self.spannung.pop(0)#self.intU=self.intU-self.spannung.pop(0)
-                l=self.time.pop(0)
+                self.spannung.pop(0)
+                lasttime=self.time.pop(0)
                 self.current.pop(0)
                 self.power.pop(0)
                 #print(("left",l,"right",i))
-                ax.set_xlim(left=l,right=i)
-                self.axes[1].set_xlim(left=l,right=i)
+                ax.set_xlim(left=lasttime,right=i)
+                self.axes[1].set_xlim(left=lasttime,right=i)
                 l=max(-min(self.spannung),max(self.spannung))*1.05
                 ll=max(-min(self.current),max(self.current))*1.05
                 ax.set_ylim(ymin=-l,ymax=l)
                 self.axes[2].set_ylim(ymin=-ll,ymax=ll)
                 self.axes[1].set_ylim(ymin=min(0,min(self.power)*1.01),ymax=max(0,max(self.power)*1.01))
+                self.intU[1]=np.sum(self.spannung[next((i for (i,v) in enumerate(self.spannung) if v<0 and self.spannung[i+1 if i<len(self.spannung)-1 else i]>0),0)+1:])*0.001
+            else:
+                print(self.spannung)
+                self.intU[1]=np.sum(self.spannung)*0.001
+            self.intU[2]=np.sum(self.spannung)*0.001
+            self.intU[0]=self.intU[0]+u*0.001
             du=(u-(self.spannung[-1] if len(self.spannung)>0 else 0))/0.001
             #self.intU=u+self.intU
-            self.spannung.append(u)
-            self.intU=np.sum(self.spannung)
-            #assert UU==self.intU,"U=%s,U=%s"%(UU,self.intU)
-            self.time.append(i)
             I=self.getCurrent(i,u,du,self.intU)
+            self.spannung.append(u)
+            self.time.append(i)
             self.current.append(I)
             self.power.append(u*I)
             ax.plot(self.time,self.spannung,color="blue")
@@ -140,7 +146,7 @@ class TKWindow(tk.Tk):
 
     def getCurrent(self,time,u,du,U):
         try:
-            impedanz=eval("lambda u,t,du,U:"+self.dictWidgets["Impedanz"].get())(u,time,du,U)
+            impedanz=eval("lambda u,t,du,U,f:"+self.dictWidgets["Impedanz"].get())(u,time,du,U,self.frequency)
             assert(impedanz!=0 and float('-inf') < float(impedanz) < float('inf'))
             self.impedanz=float(impedanz)
             self.dictWidgets["Impedanz"].config(bg="white")
@@ -156,8 +162,6 @@ class TKWindow(tk.Tk):
         return self.dictWidgets[name]
 
     def onSelection(self,a):
-        print(a)
-        print("something was selected")
         switch = Switch()
         this=self
         def attachSine():
