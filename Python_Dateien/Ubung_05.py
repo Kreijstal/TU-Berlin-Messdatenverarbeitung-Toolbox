@@ -23,7 +23,7 @@ class TKWindow(tk.Tk):
                      "ylabel 1": "Codes",
                      "title 2": "Quantisierungsrauschen",
                      "xlabel 2": "Input",
-                     "ylabel 2": "\delta Kennlinien",
+                     "ylabel 2": "$\Delta$ Kennlinien",
                      "bounds": 1000,
                      "legend_position": "upper left"}
     
@@ -123,10 +123,11 @@ class TKWindow(tk.Tk):
         self.axes2.minorticks_on()
         self.axes2.set_xbound(lower = 0, upper = self.figure_params["bounds"])
         self.axes2.set_ybound(lower = -0.5, upper = 0.5)
+        self.figure.tight_layout()
         self.plot_axes(self.axes2, self.graphs["y_delta"])
     
     def calculate_resolution(self, bits):
-        return self. figure_params["bounds"] / (bits**2 -1)
+        return self.figure_params["bounds"] / (bits**2 -1)
     
     def update_resolution_label(self, resolution):
         self.resolution_text.set("Resolution: {:.2f}".format(resolution))
