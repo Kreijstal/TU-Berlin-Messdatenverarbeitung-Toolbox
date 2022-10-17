@@ -1,10 +1,3 @@
-# Notes
-# https://www.tutorialspoint.com/python/python_gui_programming.htm
-
-# Improved Checkboxes and parameter dictionarys
-# Made checkboxes checked at start and added dictionarys for all 
-# parameters of window, widgets and plots
-
 import tkinter as tk
 import numpy as np
 import matplotlib.animation as animation
