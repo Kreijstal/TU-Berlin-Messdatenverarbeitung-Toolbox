@@ -1,13 +1,3 @@
-# Notes
-# https://www.tutorialspoint.com/python/python_gui_programming.htm
-
-# ToDo
-# ADU Kennlinie
-# Auflösung (Ausrechnen)
-# Veränderbare Bit Zahl
-# Quantisierungsrauschen
-
-
 import tkinter as tk
 import numpy as np
 import matplotlib.animation as animation
