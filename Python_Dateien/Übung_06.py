@@ -40,6 +40,46 @@ class Switch(object):
         self.case_matched = False
         return results
 
+class ToolTip(object):
+
+    def __init__(self, widget):
+        self.widget = widget
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+
+    def showtip(self, text):
+        "Display text in tooltip window"
+        self.text = text
+        if self.tipwindow or not self.text:
+            return
+        x, y, cx, cy = self.widget.bbox("insert")
+        x = x + self.widget.winfo_rootx() + 57
+        y = y + cy + self.widget.winfo_rooty() +27
+        self.tipwindow = tw = tk.Toplevel(self.widget)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        label = tk.Label(tw, text=self.text, justify=tk.LEFT,
+                      background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+                      font=("tahoma", "8", "normal"))
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+def CreateToolTip(widget, text):
+    toolTip = ToolTip(widget)
+    def enter(event):
+        toolTip.showtip(text)
+    def leave(event):
+        toolTip.hidetip()
+    widget.bind('<Enter>', enter)
+    widget.bind('<Leave>', leave)
+
+
 import tkinter as tk
 import numpy as np
 import matplotlib.animation as animation
@@ -51,7 +91,7 @@ import scipy.signal
 window_title = "Übung 06 - Leistungsimulation"
 
 def clamp(minimum, x, maximum):
-    return max(minimumself.impedanz, min(x, maximum))
+    return max(minimum, min(x, maximum))
 
 
 class TKWindow(tk.Tk):
@@ -61,7 +101,6 @@ class TKWindow(tk.Tk):
     frequency=1
     spannung=[]
     power=[]
-    spanningintegral=[]
     time=[]
     current=[]
     intU=[0,0,0]
@@ -71,6 +110,15 @@ class TKWindow(tk.Tk):
         self.figure = Figure(figsize=(10,7), dpi=100)
         self.canvas = FigureCanvasTkAgg(self.figure, self).get_tk_widget()
         self.figure.tight_layout()
+        self.m = tk.Menu(self, tearoff=0)
+        self.canvm = tk.Menu(self, tearoff=0)
+        self.viewm = tk.Menu(self, tearoff=0)
+                #self.m.add_separator()
+        #self.m.add_command(label="Rename")
+        #Adding Labels
+        tk.Label(self,text="Plot von der Spannung und Strom").grid(column=0, row=0,columnspan=5)
+        tk.Label(self,text="Frequenz =").grid(column=0, row=1,sticky="w")
+        tk.Label(self,text="Amplitude =").grid(column=0, row=2,sticky="w")
 
     def __init__(self, title = "Test Window"):
         """initialization der Klasse
@@ -90,7 +138,7 @@ class TKWindow(tk.Tk):
         #self.init_widgets()
         
     def window_loop(self):
-        self.animation_object = animation.FuncAnimation(self.figure, self.animate,init_func=self.create_axes, interval=1,frames=itertools.count(step=0.001))
+        self.animation_object = animation.FuncAnimation(self.figure, self.animate,init_func=lambda:self.create_axes(1), interval=1,frames=itertools.count(step=0.001))
         self.mainloop()
     
     def animate(self, i):
@@ -102,7 +150,7 @@ class TKWindow(tk.Tk):
         if "someFunction" in self.dictWidgets:
             ax=self.axes[0]
             u=self.dictWidgets["someFunction"](self.amplitude,self.frequency,i)
-            if len(self.spannung)>100:
+            if len(self.spannung)>300:
                 self.spannung.pop(0)
                 lasttime=self.time.pop(0)
                 self.current.pop(0)
@@ -110,6 +158,7 @@ class TKWindow(tk.Tk):
                 #print(("left",l,"right",i))
                 ax.set_xlim(left=lasttime,right=i)
                 self.axes[1].set_xlim(left=lasttime,right=i)
+                self.axes[2].set_xlim(left=lasttime,right=i)
                 l=max(-min(self.spannung),max(self.spannung))*1.05
                 ll=max(-min(self.current),max(self.current))*1.05
                 ax.set_ylim(ymin=-l,ymax=l)
@@ -117,7 +166,7 @@ class TKWindow(tk.Tk):
                 self.axes[1].set_ylim(ymin=min(0,min(self.power)*1.01),ymax=max(0,max(self.power)*1.01))
                 self.intU[1]=np.sum(self.spannung[next((i for (i,v) in enumerate(self.spannung) if v<0 and self.spannung[i+1 if i<len(self.spannung)-1 else i]>0),0)+1:])*0.001
             else:
-                print(self.spannung)
+                #print(self.spannung)
                 self.intU[1]=np.sum(self.spannung)*0.001
             self.intU[2]=np.sum(self.spannung)*0.001
             self.intU[0]=self.intU[0]+u*0.001
@@ -146,7 +195,7 @@ class TKWindow(tk.Tk):
 
     def getCurrent(self,time,u,du,U):
         try:
-            impedanz=eval("lambda u,t,du,U,f:"+self.dictWidgets["Impedanz"].get())(u,time,du,U,self.frequency)
+            impedanz=eval("lambda u,t,du,U,f,a:"+self.dictWidgets["Impedanz"].get())(u,time,du,U,self.frequency,self.amplitude)
             assert(impedanz!=0 and float('-inf') < float(impedanz) < float('inf'))
             self.impedanz=float(impedanz)
             self.dictWidgets["Impedanz"].config(bg="white")
@@ -210,29 +259,86 @@ So hoffentlich sieht de fenster so aus:
              ------------------------------------------------------------
         """        
         self.title(title)
-        #Adding Labels
-        tk.Label(self,text="Plot von der Spannung und Strom").grid(column=0, row=0,columnspan=5)
-        tk.Label(self,text="Frequenz =").grid(column=0, row=1,sticky="w")
-        tk.Label(self,text="Amplitude =").grid(column=0, row=2,sticky="w")
         #Adding Sliders and widgets
         self.createSlider("frequency",0,200).grid(column=1,row=1,sticky="ew",ipadx=120)
         self.createDropdown("dropdown",["sinus","sawtooth","rechteck"],self.onSelection).grid(column=3,row=1,columnspan=2,sticky="ew",ipadx=120)
         self.createSlider("amplitude",0,100).grid(column=1,row=2,sticky="ew",ipadx=120)
         tk.Label(self,text="Z =").grid(column=3, row=2,sticky="w")
         self.createTextInput("Impedanz","1").grid(column=4,row=2,sticky="w",ipadx=120)
+        def do_popup(menu):
+            def do_popup(event):
+                try:
+                    menu.tk_popup(event.x_root, event.y_root)
+                finally:
+                    menu.grab_release()
+            return do_popup
+        def change_text_in_input(text):
+            w=self.dictWidgets["Impedanz"]
+            w.delete(0,tk.END)
+            w.insert(tk.END,text)
+        self.m.add_command(label="Kondensator",command=lambda:change_text_in_input("2*np.pi*f*u/du"))
+        self.m.add_command(label="Kondensator + Widerstand",command=lambda:change_text_in_input("u/(du+u*99)*2*np.pi*f*2"))
+        self.m.add_command(label="Spule",command=lambda:change_text_in_input("u/(2*np.pi*f*U[0])"))
+        self.m.add_command(label="Diode",command=lambda:change_text_in_input("9999999 if u<0 else 1"))
+        self.m.add_command(label="Dimmer",command=lambda:change_text_in_input("99999999 if (du>0 and 9/10*a>u>0)or(du<0 and -9/10*a<u<0) else 1"))
+
+        self.dictWidgets["Impedanz"].bind("<Button-3>",do_popup(self.m))
+        CreateToolTip(self.dictWidgets["Impedanz"],"""Impedanz als Funktion abhängig von Spannung und Zeit
+Ein Python Ausdruck
+Rechtsklick um Beispielmenu zu Zeigen
+Variabeln
+----------
+u= Spannung
+du = Ableitung der Spannung
+U= Integral der Spannung 
+t= Zeit in (s)
+a= Amplitude
+f= Frequenz""")
+        def reset():
+            self.spannung=[]
+            self.power=[]
+            self.time=[]
+            self.current=[]
+            self.animation_object.frame_seq = self.animation_object.new_frame_seq()
+            for ax in self.axes:
+                ax.relim()
+                ax.autoscale()
+        self.canvm.add_command(label="Reset",command=reset)
+        self.canvm.add_cascade(label="View",menu=self.viewm)
+        self.viewm.add_command(label="View 1",command=lambda:self.create_axes(1))
+        self.viewm.add_command(label="View 2",command=lambda:self.create_axes(2))
+        self.viewm.add_command(label="View 3",command=lambda:self.create_axes(3))
+        self.viewm.add_command(label="View 4",command=lambda:self.create_axes(4))
+        self.canvas.bind("<Button-3>",do_popup(self.canvm))
         self.canvas.grid(column=0,row=3,columnspan = 5)
         self.createSlider("tastGrad",0,1,resolution=0.01,orient=tk.VERTICAL)
-    def create_axes(self):
+    def create_axes(self,view):
         #Creating axes
-        self.axes=[self.figure.add_subplot(1,2,1),self.figure.add_subplot(1,2,2)]
-        self.axes.append(self.axes[0].twinx())
+        self.figure.clear()
+        if view==1:
+            self.figure.subplots_adjust(right=0.75)
+            self.axes=[self.figure.add_subplot(1,1,1)]
+            self.axes.append(self.axes[0].twinx())
+            self.axes.append(self.axes[0].twinx())
+            self.axes[1].spines.right.set_position(("axes",1.2))
+        elif view==2:
+            self.figure.subplots_adjust(right=0.9)
+            self.axes=[self.figure.add_subplot(1,2,1),self.figure.add_subplot(1,2,2)]
+            self.axes.append(self.axes[0].twinx())
+        elif view==3:
+            self.figure.subplots_adjust(right=0.9)
+            self.axes=[self.figure.add_subplot(2,1,1),self.figure.add_subplot(2,1,2)]
+            self.axes.append(self.axes[0].twinx())
+        elif view==4:
+            self.figure.subplots_adjust(right=0.9)
+            self.axes=[self.figure.add_subplot(3,1,1),self.figure.add_subplot(3,1,3),self.figure.add_subplot(3,1,2)]
         self.axes[0].set_xlabel('Zeit (s)')
         self.axes[1].set_xlabel('Zeit (s)')
-        self.axes[0].set_ylabel('Spannung (V)')
-        self.axes[1].set_ylabel('Leistung (W)')
+        for i,(l,c) in enumerate([('Spannung (V)',"Blue"),('Leistung (W)',"red"),('Strom (A)',"orange")]):
+            self.axes[i].set_ylabel(l)
+            self.axes[i].yaxis.label.set_color(c)
         self.axes[1].yaxis.tick_right()
         self.axes[1].yaxis.set_label_position("right")
-        self.axes[2].set_ylabel('Strom (A)')
         #10000*10*10 #self.resizable(False, False) #self.columnconfigure(0, weight=0) #self.columnconfigure(1, weight=10)
         
 exercise_06 = TKWindow(window_title)
