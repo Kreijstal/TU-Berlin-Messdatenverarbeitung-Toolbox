@@ -40,7 +40,7 @@ class TKWindow(tk.Tk):
     widgets = {"picture": {"self": "",
                            "side": tk.LEFT,
                            "image": "",
-                           "path": "Python_Dateien\Messbruecke.png"},
+                           "path": __file__+"/../Messbruecke.png"},
                "label_u0": {"self": "",
                             "side": tk.LEFT,
                             "text": "û_0 in V:"},
@@ -88,8 +88,7 @@ class TKWindow(tk.Tk):
                                  "u_2": 0.0+0.0j,
                                  "u_3": 0.0+0.0j,
                                  "u_4": 0.0+0.0j,
-                                 "u_b": 0.0+0.0j,
-                                 "u_b2": 0.0+0.0j}
+                                 "u_b": 0.0+0.0j}
 
     def __init__(self, title = "Test Window"):
         """initialization der Klasse
@@ -271,9 +270,6 @@ class TKWindow(tk.Tk):
         self.measurement_bridge_values["u_4"]= self.measurement_bridge_values["u_0"]-self.measurement_bridge_values["z_3"]*self.measurement_bridge_values["i_34"]
         
         self.measurement_bridge_values["u_b"]= self.measurement_bridge_values["u_3"]-self.measurement_bridge_values["u_1"]
-        self.measurement_bridge_values["u_b2"]= self.measurement_bridge_values["u_2"]-self.measurement_bridge_values["u_4"]
-        
-        [print(f"{entry}: {self.measurement_bridge_values[entry]}") for entry in self.measurement_bridge_values]
     
     def update_graphs(self):
         for t in self.graphs["t"]:
