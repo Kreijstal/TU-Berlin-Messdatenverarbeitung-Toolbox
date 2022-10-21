@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Statische Eigenschaften von Messsystemen
+Anzeige einer realen- und idealen Systemkennlinie mit allen Fehlern
+
+"""
+
+
 import tkinter as tk
 import numpy as np
 import matplotlib.animation as animation
@@ -7,6 +15,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 window_title = "Übung 03 - Statische Eigenschaften von Messystemen"
 
 class TKWindow(tk.Tk):
+    """Class to generate TKinter Window
+    """      
     figure_params = {"figsize": (8,5),
                      "title": "Kennlinien Fehler",
                      "xlabel": "Output",
@@ -59,22 +69,34 @@ class TKWindow(tk.Tk):
                                          "to": 25}}    
     
     def __init__(self, title = "Test Window"):
+        """Override for standard initialization method
+
+        Args:
+            title (str, optional): Setzt den Titel des Fensters. Defaults to "Test Window".
+        """       
         super().__init__()
         self.init_window(title)
         self.init_params()
+        self.create_widgets()
+        self.init_widgets()
         self.init_figure()
         self.init_axes()
-        self.create_widgets()
         self.place_widgets()
-        self.init_widgets()
     
     def init_window(self, title):
+        """Set´s parameters for the window.
+
+        Args:
+            title (str): Setzt den Titel des Fensters.
+        """          
         self.title(title)
         self.resizable(False, False)
         self.columnconfigure(0, weight=0)
         self.columnconfigure(1, weight=10)
     
     def init_params(self):
+        """Initialize widget variables befor widget creation.
+        """        
         self.widget_params["offset_checkbox"]["variable"] = tk.BooleanVar()
         self.widget_params["amplification_checkbox"]["variable"] = tk.BooleanVar()
         self.widget_params["linearity_checkbox"]["variable"] = tk.BooleanVar()
@@ -82,14 +104,9 @@ class TKWindow(tk.Tk):
         self.widget_params["amplification_scale"]["variable"] = tk.DoubleVar()
         self.widget_params["linearity_scale"]["variable"] = tk.DoubleVar()
     
-    def init_figure(self):
-        self.figure = Figure(figsize=self.figure_params["figsize"], dpi=100)
-        self.figure_canvas = FigureCanvasTkAgg(self.figure, self)
-    
-    def init_axes(self):
-        self.axes = self.figure.add_subplot()
-    
     def create_widgets(self):
+        """Creates all widgets for the window.
+        """        
         self.scales = {self.widget_params["offset_scale"]["name"]: tk.Scale(self, 
                                                                             showvalue=1, 
                                                                             orient='horizontal', 
@@ -128,9 +145,32 @@ class TKWindow(tk.Tk):
                                                                                             offvalue=False)}
     
     def checkbox_clicked(self, scale):
+        """Callback for a clicked checkbox
+
+        Args:
+            scale (dict): Scale whose value has to be set to zero
+        """        
         scale.set(0)
     
+    def init_widgets(self):
+        """Initialize widget variables after widget creation.
+        """     
+        [self.checkboxes[checkbox].select() for checkbox in self.checkboxes]
+    
+    def init_figure(self):
+        """Initialize matplotlib figure and corresponding widget.
+        """        
+        self.figure = Figure(figsize=self.figure_params["figsize"], dpi=100)
+        self.figure_canvas = FigureCanvasTkAgg(self.figure, self)
+    
+    def init_axes(self):
+        """Initialize figure axes.
+        """        
+        self.axes = self.figure.add_subplot()
+    
     def place_widgets(self):
+        """Place TKinter widgets.
+        """       
         self.figure_canvas.get_tk_widget().grid(row = 0, column = 0, columnspan = 2)
         
         self.checkboxes['offset'].grid(row = 1, column = 0, sticky = 'w', pady = 10, padx = 40)
@@ -141,14 +181,18 @@ class TKWindow(tk.Tk):
         self.scales['amplification'].grid(row = 2, column = 1, sticky = 'ew', pady = 10, padx = 40)
         self.scales['linearity'].grid(row = 3, column = 1, sticky = 'ew', pady = 10, padx = 40)
     
-    def init_widgets(self):
-        [self.checkboxes[checkbox].select() for checkbox in self.checkboxes]
-    
     def window_loop(self):
+        """Startin animation and window loop.
+        """        
         self.animation_object = animation.FuncAnimation(self.figure, self.animate, interval = 100)
         self.mainloop()
     
     def animate(self, i):
+        """Method respnsible for animation. Updates axes objects and calls all necessary methods to draw graphs.
+
+        Args:
+            i (int): needed for animation
+        """       
         self.update_graphs()
         self.axes.clear()
         self.axes.set_title(self.figure_params["title"])
@@ -167,6 +211,8 @@ class TKWindow(tk.Tk):
         self.axes.legend(loc=self.figure_params["legend_position"])
     
     def update_graphs(self):
+        """Update graph values.
+        """        
         a = self.widget_params["offset_scale"]["variable"].get() if self.widget_params['offset_checkbox']["variable"].get() else 0
         b = 1 + self.widget_params["amplification_scale"]["variable"].get()/(100 if self.widget_params["amplification_scale"]["variable"].get() < 0 else 10) \
         if self.widget_params['amplification_checkbox']["variable"].get() else 1
@@ -180,6 +226,11 @@ class TKWindow(tk.Tk):
             self.graphs["y_linearity_error"]["curve"][x] = x - c*((x/d - 1)**2 - 1)
     
     def plot_axes(self, plot):
+        """Plots given graph in axes object.
+
+        Args:
+            plot (dict): Graph to plot
+        """        
         self.axes.plot(self.graphs["x"], 
                        plot["curve"], 
                        label = plot["label"], 
