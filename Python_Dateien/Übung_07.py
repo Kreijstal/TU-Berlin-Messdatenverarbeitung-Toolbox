@@ -93,7 +93,7 @@ class TKWindow(tk.Tk):
                                  "u_b": 0.0+0.0j}
 
     def __init__(self, title = "Test Window"):
-        """_summary_
+        """Override for standard initialization method
 
         Args:
             title (str, optional): Setzt den Titel des Fensters. Defaults to "Test Window".
@@ -141,7 +141,7 @@ class TKWindow(tk.Tk):
     
     def init_params(self):
         """Initialize widget variables befor widget creation.
-        """        
+        """      
         self.widgets["picture"]["image"] = tk.PhotoImage(file=self.widgets["picture"]["path"])
         
         self.widgets["entry_u0"]["variable"] = tk.StringVar()
@@ -230,7 +230,6 @@ class TKWindow(tk.Tk):
         Args:
             i (int): needed for animation
         """        
-        print(f"i: {i}")
         if self.check_for_changed_entry():
             self.update_measurement_bridge_values()
             self.update_graphs()
@@ -325,7 +324,6 @@ class TKWindow(tk.Tk):
             graph (dict): Graph to plot
             x (dict, optional): values for x-axis. Defaults to None, in this case a linear series is used.
         """    
-        print(f"axes: {type(axes)}; graph: {type(graph)}; x: {type(x)}")    
         axes.plot(self.graphs["t"] if x is None else x["curve"], 
                   graph["curve"], 
                   label = graph["label"], 
