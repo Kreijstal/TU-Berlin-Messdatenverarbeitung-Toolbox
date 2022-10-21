@@ -16,6 +16,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 window_title = "Übung 07 - Messbrücke"
 
 class TKWindow(tk.Tk):
+    """Class to generate TKinter Window
+    """        
     f = 50 # Frequency of the Base Signal u_0
     figure_params = {"figsize": (8,5),
                      "title 1": "Signal Verläufe",
@@ -91,11 +93,11 @@ class TKWindow(tk.Tk):
                                  "u_b": 0.0+0.0j}
 
     def __init__(self, title = "Test Window"):
-        """initialization der Klasse
+        """_summary_
 
         Args:
-            title (str, optional): Fenstertitle. Defaults to "Test Window".
-        """        ""
+            title (str, optional): Setzt den Titel des Fensters. Defaults to "Test Window".
+        """        
         super().__init__()
         self.init_window(title)
         self.init_frames()
@@ -107,15 +109,17 @@ class TKWindow(tk.Tk):
         self.place_widgets()
     
     def init_window(self, title):
-        """_summary_
+        """Set´s parameters for the window.
 
         Args:
-            title (_type_): _description_
-        """        
+            title (str): Setzt den Titel des Fensters.
+        """          
         self.title(title)
         self.resizable(False, False)
     
     def init_frames(self):
+        """Initialize Frames for Window Layout
+        """        
         self.frame = tk.Frame(self)
         self.frame.pack()
         self.frame_bottom = tk.Frame(self.frame)
@@ -136,6 +140,8 @@ class TKWindow(tk.Tk):
         self.frame_row_6.pack()
     
     def init_params(self):
+        """Initialize widget variables befor widget creation.
+        """        
         self.widgets["picture"]["image"] = tk.PhotoImage(file=self.widgets["picture"]["path"])
         
         self.widgets["entry_u0"]["variable"] = tk.StringVar()
@@ -145,6 +151,8 @@ class TKWindow(tk.Tk):
         self.widgets["entry_z4"]["variable"] = tk.StringVar()
     
     def create_widgets(self):
+        """Creates all widgets for the window.
+        """        
         self.widgets["picture"]["self"] = tk.Canvas(self.frame, width=600)
         
         self.label_info1 = tk.Label(self.frame_row_2, text="Darstellung von komplexen Zahlen:", padx=30).pack(side=tk.TOP)
@@ -165,13 +173,19 @@ class TKWindow(tk.Tk):
         self.widgets["entry_z4"]["self"] = tk.Entry(self.frame_row_6, textvariable=self.widgets["entry_z4"]["variable"])
     
     def init_widgets(self):
+        """Initialize widget variables after widget creation.
+        """        
         self.widgets["picture"]["self"].create_image(300, 160, image=self.widgets["picture"]["image"])
     
     def init_figure(self):
+        """Initialize matplotlib figure and corresponding widget.
+        """        
         self.figure = Figure(figsize=self.figure_params["figsize"], dpi=100)
         self.figure_canvas = FigureCanvasTkAgg(self.figure, self.frame_bottom)
     
     def init_axes(self):
+        """Initialize figure axes.
+        """        
         self.axes1 = self.figure.add_subplot(1, 2, 1)   # plot of u_o and u_b over time
         self.axes2 = self.figure.add_subplot(1, 2, 2)   # plot of u_0 over u_b
         
@@ -198,15 +212,25 @@ class TKWindow(tk.Tk):
         self.plot_axes(self.axes2, self.graphs["u_0"], self.graphs["u_b"])
     
     def place_widgets(self):
+        """Place TKinter widgets.
+        """        
         self.figure_canvas.get_tk_widget().pack()
         
         [self.widgets[widget]["self"].pack(side=self.widgets[widget]["side"]) for widget in self.widgets]
     
     def window_loop(self):
+        """Startin animation and window loop.
+        """        
         self.animation_object = animation.FuncAnimation(self.figure, self.animate, interval = 100)
         self.mainloop()
     
     def animate(self, i):
+        """Method respnsible for animation. Updates axes objects and calls all necessary methods to draw graphs.
+
+        Args:
+            i (int): needed for animation
+        """        
+        print(f"i: {i}")
         if self.check_for_changed_entry():
             self.update_measurement_bridge_values()
             self.update_graphs()
@@ -234,6 +258,11 @@ class TKWindow(tk.Tk):
             self.plot_axes(self.axes2, self.graphs["u_0"], self.graphs["u_b"])
     
     def check_for_changed_entry(self):
+        """Method to check all input variables for updates/changes
+
+        Returns:
+            bool: Result of check for changed variables
+        """        
         for entry in self.widgets:
             if "entry" in entry:
                 if self.entry_changed(entry):
@@ -249,9 +278,19 @@ class TKWindow(tk.Tk):
         return False
     
     def entry_changed(self, entry):
+        """Compares current value of given variable with old value
+
+        Args:
+            entry (dict): Dictionary containing all variables of corresponding widget.
+
+        Returns:
+            bool: Result of comparison
+        """        
         return self.widgets[entry]["variable"].get() != self.widgets[entry]["old_value"]
     
     def update_measurement_bridge_values(self):
+        """Writes the complex number from entry widget into corresponding variable.
+        """        
         self.measurement_bridge_values["u_0"]= complex(self.widgets["entry_u0"]["variable"].get()) if self.widgets["entry_u0"]["variable"].get() != "" else 0.0+0.0j
         self.measurement_bridge_values["z_1"]= complex(self.widgets["entry_z1"]["variable"].get()) if self.widgets["entry_z1"]["variable"].get() != "" else 0.0+0.0j
         self.measurement_bridge_values["z_2"]= complex(self.widgets["entry_z2"]["variable"].get()) if self.widgets["entry_z2"]["variable"].get() != "" else 0.0+0.0j
@@ -272,11 +311,21 @@ class TKWindow(tk.Tk):
         self.measurement_bridge_values["u_b"]= self.measurement_bridge_values["u_3"]-self.measurement_bridge_values["u_1"]
     
     def update_graphs(self):
+        """Update graph values.
+        """        
         for t in self.graphs["t"]:
             self.graphs["u_0"]["curve"][int(t)] = self.measurement_bridge_values["u_0"].real*np.sin(2*np.pi*self.f*t/1000)
             self.graphs["u_b"]["curve"][int(t)] = self.measurement_bridge_values["u_b"].real*np.sin(2*np.pi*self.f*t/1000+self.f*np.angle(self.measurement_bridge_values["u_b"]))
     
     def plot_axes(self, axes, graph, x=None):
+        """Plots given graph in given axes object.
+
+        Args:
+            axes (matplotlib axes object): Ploting in this axes object
+            graph (dict): Graph to plot
+            x (dict, optional): values for x-axis. Defaults to None, in this case a linear series is used.
+        """    
+        print(f"axes: {type(axes)}; graph: {type(graph)}; x: {type(x)}")    
         axes.plot(self.graphs["t"] if x is None else x["curve"], 
                   graph["curve"], 
                   label = graph["label"], 
