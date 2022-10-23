@@ -314,7 +314,6 @@ class TKWindow(tk.Tk):
         """Update graph values.
         """        
         for t in self.graphs["t"]:
-            print(np.angle(self.measurement_bridge_values["u_0"]))
             self.graphs["u_0"]["curve"][int(t)] = np.absolute(self.measurement_bridge_values["u_0"])*np.sin(2*np.pi*self.f*t/1000+np.angle(self.measurement_bridge_values["u_0"]))
             self.graphs["u_b"]["curve"][int(t)] = np.absolute(self.measurement_bridge_values["u_b"])*np.sin(2*np.pi*self.f*t/1000+np.angle(self.measurement_bridge_values["u_b"]))
     
