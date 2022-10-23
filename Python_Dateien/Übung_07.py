@@ -251,8 +251,8 @@ class TKWindow(tk.Tk):
             self.axes2.autoscale(False)
             self.axes2.grid()
             self.axes2.minorticks_on()
-            self.axes2.set_xbound(lower = -self.measurement_bridge_values["u_0"].real, upper = self.measurement_bridge_values["u_0"].real)
-            self.axes2.set_ybound(lower = -self.measurement_bridge_values["u_0"].real, upper = self.measurement_bridge_values["u_0"].real)
+            self.axes2.set_xbound(lower = -np.absolute(self.measurement_bridge_values["u_0"]), upper = np.absolute(self.measurement_bridge_values["u_0"]))
+            self.axes2.set_ybound(lower = -np.absolute(self.measurement_bridge_values["u_0"]), upper = np.absolute(self.measurement_bridge_values["u_0"]))
             self.figure.tight_layout()
             self.plot_axes(self.axes2, self.graphs["u_0"], self.graphs["u_b"])
     
@@ -313,8 +313,9 @@ class TKWindow(tk.Tk):
         """Update graph values.
         """        
         for t in self.graphs["t"]:
-            self.graphs["u_0"]["curve"][int(t)] = self.measurement_bridge_values["u_0"].real*np.sin(2*np.pi*self.f*t/1000)
-            self.graphs["u_b"]["curve"][int(t)] = self.measurement_bridge_values["u_b"].real*np.sin(2*np.pi*self.f*t/1000+self.f*np.angle(self.measurement_bridge_values["u_b"]))
+            print(np.angle(self.measurement_bridge_values["u_0"]))
+            self.graphs["u_0"]["curve"][int(t)] = np.absolute(self.measurement_bridge_values["u_0"])*np.sin(2*np.pi*self.f*t/1000+np.angle(self.measurement_bridge_values["u_0"]))
+            self.graphs["u_b"]["curve"][int(t)] = np.absolute(self.measurement_bridge_values["u_b"])*np.sin(2*np.pi*self.f*t/1000+np.angle(self.measurement_bridge_values["u_b"]))
     
     def plot_axes(self, axes, graph, x=None):
         """Plots given graph in given axes object.
