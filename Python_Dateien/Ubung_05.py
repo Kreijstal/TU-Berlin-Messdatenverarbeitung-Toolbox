@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Digitale Messdatenerfassung
-Anzeige einer ADU-Kennline für einstellbare Parameter mit Quantisierungsrau-
-schen
+Anzeige einer ADU-Kennline für einstellbare Parameter mit Quantisierungsrauschen
+
+von Erik Tröndle
 
 """
 

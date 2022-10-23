@@ -3,6 +3,8 @@
 Statische Eigenschaften von Messsystemen
 Anzeige einer realen- und idealen Systemkennlinie mit allen Fehlern
 
+von Erik Tröndle
+
 """
 
 

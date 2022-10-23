@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Messbrücken
-Anzeige der Brückenspannung und der Oszilloskopanzeigen für eine vorgebbare
-Messbrücke
+Anzeige der Brückenspannung und der Oszilloskopanzeigen für eine vorgebbare Messbrücke
+
+von Erik Tröndle
 
 """
 
