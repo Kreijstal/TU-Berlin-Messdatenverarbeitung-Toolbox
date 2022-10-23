@@ -87,24 +87,33 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import itertools
 import scipy.signal
-
+from functools import reduce
+#
 window_title = "Übung 06 - Leistungsimulation"
 
-def clamp(minimum, x, maximum):
-    return max(minimum, min(x, maximum))
+#def clamp(minimum, x, maximum):
+#    return max(minimum, min(x, maximum))
 
 
 class TKWindow(tk.Tk):
     """Das hier zeigt in tkinter ein Plot von Spannung und Strom """
     dictWidgets=dict()
-    amplitude=1
-    frequency=1
+    amplitude=0
+    frequency=0
     spannung=[]
+    ueff=[]
+    ueffv=0
+    ieff=[]
+    ieffv=0
     power=[]
     time=[]
     current=[]
-    intU=[0,0,0]
+    peff=[]
+    intU=0
     impedanz=1
+    tx=0.001
+    phi=0
+    showeff=None
 
     def createWidgets(self):
         self.figure = Figure(figsize=(10,7), dpi=100)
@@ -138,50 +147,81 @@ class TKWindow(tk.Tk):
         #self.init_widgets()
         
     def window_loop(self):
-        self.animation_object = animation.FuncAnimation(self.figure, self.animate,init_func=lambda:self.create_axes(1), interval=1,frames=itertools.count(step=0.001))
+        self.animation_object = animation.FuncAnimation(self.figure, self.animate,init_func=lambda:self.create_axes(1), interval=1,frames=itertools.count(step=self.tx))
         self.mainloop()
     
     def animate(self, i):
-        self.frequency=self.dictWidgets["frequency"].get()
+        #self.frequency=self.dictWidgets["frequency"].get()
         self.amplitude=self.dictWidgets["amplitude"].get()
+        show=self.showeff.get()
+        symmetrisch=self.sym.get()
         for ax in self.axes:
             for artist in ax.lines + ax.collections:
                 artist.remove()
         if "someFunction" in self.dictWidgets:
             ax=self.axes[0]
-            u=self.dictWidgets["someFunction"](self.amplitude,self.frequency,i)
-            if len(self.spannung)>300:
-                self.spannung.pop(0)
-                lasttime=self.time.pop(0)
-                self.current.pop(0)
-                self.power.pop(0)
+            t=np.linspace(i-self.tx+self.tx/10,i,10)
+            u=self.dictWidgets["someFunction"](self.amplitude,self.frequency,t)
+            leg=self.showlegend.get()
+            for (Z,V) in zip(t,u):
+                self.intU=self.intU+V*self.tx/10
+                du=(V-(self.spannung[-1] if len(self.spannung)>0 else 0))/(self.tx/10)
+                I=self.getCurrent(Z,V,du,self.intU)
+                self.spannung.append(V)
+                self.time.append(Z)
+                self.current.append(I)
+                self.power.append(V*I)
+                self.ueffv=self.ueffv+V**2*self.tx/10
+                self.ieffv=self.ieffv+I**2*self.tx/10
+                ueff=np.sqrt(self.ueffv/Z)
+                ieff=np.sqrt(self.ieffv/Z)
+                self.ueff.append(ueff)
+                self.ieff.append(ieff)
+                self.peff.append(ieff*ueff)
+            if len(self.spannung)>1000:
+                lasttime=self.time[0]
+                self.time=self.time[10:]
+                self.spannung=self.spannung[10:]
+                self.current=self.current[10:]
+                self.power=self.power[10:]
+                self.ueff=self.ueff[10:]
+                self.ieff=self.ieff[10:]
+                self.peff=self.peff[10:]
                 #print(("left",l,"right",i))
                 ax.set_xlim(left=lasttime,right=i)
                 self.axes[1].set_xlim(left=lasttime,right=i)
                 self.axes[2].set_xlim(left=lasttime,right=i)
-                l=max(-min(self.spannung),max(self.spannung))*1.05
-                ll=max(-min(self.current),max(self.current))*1.05
-                ax.set_ylim(ymin=-l,ymax=l)
-                self.axes[2].set_ylim(ymin=-ll,ymax=ll)
-                self.axes[1].set_ylim(ymin=min(0,min(self.power)*1.01),ymax=max(0,max(self.power)*1.01))
-                self.intU[1]=np.sum(self.spannung[next((i for (i,v) in enumerate(self.spannung) if v<0 and self.spannung[i+1 if i<len(self.spannung)-1 else i]>0),0)+1:])*0.001
+                for (meas,ax,eff) in zip((self.spannung,self.current),(self.axes[0],self.axes[2]),(self.ueff,self.ieff)):
+                    topmax=max(meas)
+                    botmin=min(meas)
+                    if show:
+                        topmax=max((topmax,max(eff)))
+                        botmin=min((botmin,min(eff)))
+                    if symmetrisch:
+                        topmax=max(topmax,-botmin)
+                        botmin=-topmax
+                    dx=(topmax-botmin)*0.05
+                    topmax=topmax+dx
+                    botmin=botmin-dx
+                    ax.set_ylim(ymin=botmin,ymax=topmax)
+                maxpow=max(self.power)
+                if show:
+                    maxpow=max(maxpow,max(self.peff))
+                self.axes[1].set_ylim(ymin=min(0,min(self.power)*1.01),ymax=max(0,maxpow*1.01))
+            lnsa=[]
+            for (i,c,l,val,valeff) in  zip((0,2,1),("blue","orange","red"),("u","i","p"),(self.spannung,self.current,self.power),(self.ueff,self.ieff,self.peff)):
+                ax=self.axes[i]
+                if show:
+                    lnsa.append(ax.plot(self.time,valeff,color=c,linestyle="--",label="$%s_{eff}$"%l.upper()))
+                lnsa.append(ax.plot(self.time,val,color=c,label="$%s(t)$"%l))
+            ax=self.axes[0]
+            lns=reduce(lambda a,b:a+b,lnsa)
+            if leg:
+                ax.legend(lns,[l.get_label() for l in lns],bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left", mode="expand", borderaxespad=0, ncol=3)
             else:
-                #print(self.spannung)
-                self.intU[1]=np.sum(self.spannung)*0.001
-            self.intU[2]=np.sum(self.spannung)*0.001
-            self.intU[0]=self.intU[0]+u*0.001
-            du=(u-(self.spannung[-1] if len(self.spannung)>0 else 0))/0.001
-            #self.intU=u+self.intU
-            I=self.getCurrent(i,u,du,self.intU)
-            self.spannung.append(u)
-            self.time.append(i)
-            self.current.append(I)
-            self.power.append(u*I)
-            ax.plot(self.time,self.spannung,color="blue")
-            ax=self.axes[2]
-            ax.plot(self.time,self.current,color="orange")
-            ax=self.axes[1]
-            ax.plot(self.time,self.power,color="red")
+                legend=ax.get_legend()
+                if legend:
+                    legend.remove()
         pass
     def createSlider(self,name,from_,to,orient=tk.HORIZONTAL,**kwargs):
             self.dictWidgets[name]=tk.Scale(self,orient=orient,length=100, from_=from_, to=to,**kwargs)
@@ -217,17 +257,17 @@ class TKWindow(tk.Tk):
             this.dictWidgets["someFunction"]=sine
             this.dictWidgets["tastGrad"].grid_remove()
         def sine(amplitude,frequency,time):
-            return amplitude*np.sin(time*2*np.pi*frequency)
+            return amplitude*np.sin(time*2*np.pi*frequency+self.phi)
         def attachRechteck():
             this.dictWidgets["someFunction"]=rechteck
             this.dictWidgets["tastGrad"].grid(column=5,row=0,sticky="ns",rowspan=4)
         def rechteck(amplitude,frequency,time):
-            return amplitude*scipy.signal.square(time*2*np.pi*frequency,duty=this.dictWidgets["tastGrad"].get())
+            return amplitude*scipy.signal.square(time*2*np.pi*frequency+self.phi,duty=this.dictWidgets["tastGrad"].get())
         def attachsawtooth():
             this.dictWidgets["tastGrad"].grid(column=5,row=0,sticky="ns",rowspan=4)
             this.dictWidgets["someFunction"]=sawtooth
         def sawtooth(amplitude,frequency,time):
-            return amplitude*scipy.signal.sawtooth(time*2*np.pi*frequency,width=this.dictWidgets["tastGrad"].get())
+            return amplitude*scipy.signal.sawtooth(time*2*np.pi*frequency+self.phi,width=this.dictWidgets["tastGrad"].get())
         case_1 = attachSine
         case_2 = attachRechteck
         case_3 = attachsawtooth
@@ -237,7 +277,14 @@ class TKWindow(tk.Tk):
         switch.add_case("sawtooth", case_3, True)
         switch.add_case("rechteck", case_3, True)
         switch.case(a)
-
+    def change_frequency(self,freq):
+        oldfrequency=self.frequency
+        self.frequency=float(freq)
+        oldphase=self.phi
+        tau=2*np.pi
+        t=self.time[-1]+0.0001 if len(self.time)>0 else 0
+        self.phi=(tau*(oldfrequency-self.frequency)*t+oldphase)%tau
+        #print(("old",oldfrequency,"new",freq,"time",t,"oldphi",oldphase,"phi",self.phi,"1",(t*tau*oldfrequency+oldphase)%tau,"2",(t*tau*self.frequency+self.phi)%tau))
 
     def init_window(self, title):
         """
@@ -260,7 +307,7 @@ So hoffentlich sieht de fenster so aus:
         """        
         self.title(title)
         #Adding Sliders and widgets
-        self.createSlider("frequency",0,200).grid(column=1,row=1,sticky="ew",ipadx=120)
+        self.createSlider("frequency",0,200,command=self.change_frequency).grid(column=1,row=1,sticky="ew",ipadx=120)
         self.createDropdown("dropdown",["sinus","sawtooth","rechteck"],self.onSelection).grid(column=3,row=1,columnspan=2,sticky="ew",ipadx=120)
         self.createSlider("amplitude",0,100).grid(column=1,row=2,sticky="ew",ipadx=120)
         tk.Label(self,text="Z =").grid(column=3, row=2,sticky="w")
@@ -278,7 +325,7 @@ So hoffentlich sieht de fenster so aus:
             w.insert(tk.END,text)
         self.m.add_command(label="Kondensator",command=lambda:change_text_in_input("2*np.pi*f*u/du"))
         self.m.add_command(label="Kondensator + Widerstand",command=lambda:change_text_in_input("u/(du+u*99)*2*np.pi*f*2"))
-        self.m.add_command(label="Spule",command=lambda:change_text_in_input("u/(2*np.pi*f*U[0])"))
+        self.m.add_command(label="Spule",command=lambda:change_text_in_input("u/(2*np.pi*f*U)"))
         self.m.add_command(label="Diode",command=lambda:change_text_in_input("9999999 if u<0 else 1"))
         self.m.add_command(label="Dimmer",command=lambda:change_text_in_input("99999999 if (du>0 and 9/10*a>u>0)or(du<0 and -9/10*a<u<0) else 1"))
 
@@ -299,11 +346,27 @@ f= Frequenz""")
             self.power=[]
             self.time=[]
             self.current=[]
+            self.ueff=[]
+            self.ueffv=0
+            self.ieff=[]
+            self.ieffv=0
+            self.peff=[]
             self.animation_object.frame_seq = self.animation_object.new_frame_seq()
+            self.intU=0
             for ax in self.axes:
+                for artist in ax.lines + ax.collections:
+                    artist.remove()
                 ax.relim()
                 ax.autoscale()
         self.canvm.add_command(label="Reset",command=reset)
+        self.showeff=tk.BooleanVar()
+        self.sym=tk.BooleanVar()
+        self.showlegend=tk.BooleanVar()
+        self.sym.set(True)
+        self.showlegend.set(True)
+        self.canvm.add_checkbutton(label="Effektive Werte zeigen",onvalue=1,offvalue=0,variable=self.showeff)
+        self.canvm.add_checkbutton(label="Y Achse symmetrisch",onvalue=1,offvalue=0,variable=self.sym)
+        self.canvm.add_checkbutton(label="Zeige Legende",onvalue=1,offvalue=0,variable=self.showlegend)
         self.canvm.add_cascade(label="View",menu=self.viewm)
         self.viewm.add_command(label="View 1",command=lambda:self.create_axes(1))
         self.viewm.add_command(label="View 2",command=lambda:self.create_axes(2))
