@@ -87,7 +87,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import itertools
 import scipy.signal
-
+from functools import reduce
+#
 window_title = "Übung 06 - Leistungsimulation"
 
 #def clamp(minimum, x, maximum):
@@ -97,8 +98,8 @@ window_title = "Übung 06 - Leistungsimulation"
 class TKWindow(tk.Tk):
     """Das hier zeigt in tkinter ein Plot von Spannung und Strom """
     dictWidgets=dict()
-    amplitude=1
-    frequency=1
+    amplitude=0
+    frequency=0
     spannung=[]
     ueff=[]
     ueffv=0
@@ -111,6 +112,7 @@ class TKWindow(tk.Tk):
     intU=0
     impedanz=1
     tx=0.001
+    phi=0
     showeff=None
 
     def createWidgets(self):
@@ -149,7 +151,7 @@ class TKWindow(tk.Tk):
         self.mainloop()
     
     def animate(self, i):
-        self.frequency=self.dictWidgets["frequency"].get()
+        #self.frequency=self.dictWidgets["frequency"].get()
         self.amplitude=self.dictWidgets["amplitude"].get()
         show=self.showeff.get()
         symmetrisch=self.sym.get()
@@ -202,19 +204,24 @@ class TKWindow(tk.Tk):
                     topmax=topmax+dx
                     botmin=botmin-dx
                     ax.set_ylim(ymin=botmin,ymax=topmax)
-
-                self.axes[1].set_ylim(ymin=min(0,min(self.power)*1.01),ymax=max(0,max(self.power)*1.01))
+                maxpow=max(self.power)
+                if show:
+                    maxpow=max(maxpow,max(self.peff))
+                self.axes[1].set_ylim(ymin=min(0,min(self.power)*1.01),ymax=max(0,maxpow*1.01))
+            lnsa=[]
             for (i,c,l,val,valeff) in  zip((0,2,1),("blue","orange","red"),("u","i","p"),(self.spannung,self.current,self.power),(self.ueff,self.ieff,self.peff)):
                 ax=self.axes[i]
                 if show:
-                    ax.plot(self.time,valeff,color=c,linestyle="--",label="$%s_{eff}$"%l.upper())
-                ax.plot(self.time,val,color=c,label="$%s(t)$"%l)
-                if leg:
-                    ax.legend()
-                else:
-                    legend=ax.get_legend()
-                    if legend:
-                        legend.remove()
+                    lnsa.append(ax.plot(self.time,valeff,color=c,linestyle="--",label="$%s_{eff}$"%l.upper()))
+                lnsa.append(ax.plot(self.time,val,color=c,label="$%s(t)$"%l))
+            ax=self.axes[0]
+            lns=reduce(lambda a,b:a+b,lnsa)
+            if leg:
+                ax.legend(lns,[l.get_label() for l in lns],bbox_to_anchor=(0, 1.02, 1, 0.2), loc="lower left", mode="expand", borderaxespad=0, ncol=3)
+            else:
+                legend=ax.get_legend()
+                if legend:
+                    legend.remove()
         pass
     def createSlider(self,name,from_,to,orient=tk.HORIZONTAL,**kwargs):
             self.dictWidgets[name]=tk.Scale(self,orient=orient,length=100, from_=from_, to=to,**kwargs)
@@ -250,17 +257,17 @@ class TKWindow(tk.Tk):
             this.dictWidgets["someFunction"]=sine
             this.dictWidgets["tastGrad"].grid_remove()
         def sine(amplitude,frequency,time):
-            return amplitude*np.sin(time*2*np.pi*frequency)
+            return amplitude*np.sin(time*2*np.pi*frequency+self.phi)
         def attachRechteck():
             this.dictWidgets["someFunction"]=rechteck
             this.dictWidgets["tastGrad"].grid(column=5,row=0,sticky="ns",rowspan=4)
         def rechteck(amplitude,frequency,time):
-            return amplitude*scipy.signal.square(time*2*np.pi*frequency,duty=this.dictWidgets["tastGrad"].get())
+            return amplitude*scipy.signal.square(time*2*np.pi*frequency+self.phi,duty=this.dictWidgets["tastGrad"].get())
         def attachsawtooth():
             this.dictWidgets["tastGrad"].grid(column=5,row=0,sticky="ns",rowspan=4)
             this.dictWidgets["someFunction"]=sawtooth
         def sawtooth(amplitude,frequency,time):
-            return amplitude*scipy.signal.sawtooth(time*2*np.pi*frequency,width=this.dictWidgets["tastGrad"].get())
+            return amplitude*scipy.signal.sawtooth(time*2*np.pi*frequency+self.phi,width=this.dictWidgets["tastGrad"].get())
         case_1 = attachSine
         case_2 = attachRechteck
         case_3 = attachsawtooth
@@ -270,7 +277,14 @@ class TKWindow(tk.Tk):
         switch.add_case("sawtooth", case_3, True)
         switch.add_case("rechteck", case_3, True)
         switch.case(a)
-
+    def change_frequency(self,freq):
+        oldfrequency=self.frequency
+        self.frequency=float(freq)
+        oldphase=self.phi
+        tau=2*np.pi
+        t=self.time[-1]+0.0001 if len(self.time)>0 else 0
+        self.phi=(tau*(oldfrequency-self.frequency)*t+oldphase)%tau
+        #print(("old",oldfrequency,"new",freq,"time",t,"oldphi",oldphase,"phi",self.phi,"1",(t*tau*oldfrequency+oldphase)%tau,"2",(t*tau*self.frequency+self.phi)%tau))
 
     def init_window(self, title):
         """
@@ -293,7 +307,7 @@ So hoffentlich sieht de fenster so aus:
         """        
         self.title(title)
         #Adding Sliders and widgets
-        self.createSlider("frequency",0,200).grid(column=1,row=1,sticky="ew",ipadx=120)
+        self.createSlider("frequency",0,200,command=self.change_frequency).grid(column=1,row=1,sticky="ew",ipadx=120)
         self.createDropdown("dropdown",["sinus","sawtooth","rechteck"],self.onSelection).grid(column=3,row=1,columnspan=2,sticky="ew",ipadx=120)
         self.createSlider("amplitude",0,100).grid(column=1,row=2,sticky="ew",ipadx=120)
         tk.Label(self,text="Z =").grid(column=3, row=2,sticky="w")
