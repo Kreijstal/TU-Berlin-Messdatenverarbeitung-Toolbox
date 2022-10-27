@@ -26,7 +26,7 @@ class TKWindow(tk.Tk):
                      "ylabel 1": "U in V",
                      "title 2": "XY-Betrieb",
                      "xlabel 2": "$U_B$ in V",
-                     "ylabel 2": "$U_=$ in V",
+                     "ylabel 2": "$U_0$ in V",
                      "bounds": 100,
                      "legend_position": "upper right"}
     
