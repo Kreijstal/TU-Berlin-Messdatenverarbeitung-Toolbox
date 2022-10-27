@@ -22,7 +22,7 @@ class TKWindow(tk.Tk):
     f = 50 # Frequency of the Base Signal u_0
     figure_params = {"figsize": (8,5),
                      "title 1": "Signal Verläufe",
-                     "xlabel 1": "t in s",
+                     "xlabel 1": "t in ms",
                      "ylabel 1": "U in V",
                      "title 2": "XY-Betrieb",
                      "xlabel 2": "$U_B$ in V",
