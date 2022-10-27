@@ -62,23 +62,23 @@ class TKWindow(tk.Tk):
                "entry_u0": {"self": "",
                             "side": tk.RIGHT,
                             "variable": "",
-                            "old_value": ""},
+                            "old_value": "0"},
                "entry_z1": {"self": "",
                             "side": tk.RIGHT,
                             "variable": "",
-                            "old_value": ""},
+                            "old_value": "0"},
                "entry_z2": {"self": "",
                             "side": tk.RIGHT,
                             "variable": "",
-                            "old_value": ""},
+                            "old_value": "0"},
                "entry_z3": {"self": "",
                             "side": tk.RIGHT,
                             "variable": "",
-                            "old_value": ""},
+                            "old_value": "0"},
                "entry_z4": {"self": "",
                             "side": tk.RIGHT,
                             "variable": "",
-                            "old_value": ""}}
+                            "old_value": "0"}}
     
     measurement_bridge_values = {"u_0": 0.0+0.0j,
                                  "z_1": 0.0+0.0j,
@@ -177,6 +177,12 @@ class TKWindow(tk.Tk):
         """Initialize widget variables after widget creation.
         """        
         self.widgets["picture"]["self"].create_image(300, 160, image=self.widgets["picture"]["image"])
+        
+        self.widgets["entry_u0"]["self"].insert(0, "0")
+        self.widgets["entry_z1"]["self"].insert(0, "0")
+        self.widgets["entry_z2"]["self"].insert(0, "0")
+        self.widgets["entry_z3"]["self"].insert(0, "0")
+        self.widgets["entry_z4"]["self"].insert(0, "0")
     
     def init_figure(self):
         """Initialize matplotlib figure and corresponding widget.
