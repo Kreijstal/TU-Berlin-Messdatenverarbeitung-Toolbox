@@ -157,9 +157,9 @@ class TKWindow(tk.Tk):
         self.widgets["picture"]["self"] = tk.Canvas(self.frame, width=600)
         
         self.label_info1 = tk.Label(self.frame_row_2, text="Darstellung von komplexen Zahlen:", padx=30).pack(side=tk.TOP)
-        self.label_info1 = tk.Label(self.frame_row_2, text="Trennzeichen ist ein Punkt \".\"", padx=30).pack(side=tk.TOP)
-        self.label_info1 = tk.Label(self.frame_row_2, text="Zeichen für komplexen Anteil ist \"j\"", padx=30).pack(side=tk.TOP)
-        self.label_info1 = tk.Label(self.frame_row_2, text="Beispiel: -5.5+10j", padx=30).pack(side=tk.TOP)
+        self.label_info2 = tk.Label(self.frame_row_2, text="Trennzeichen ist ein Punkt \".\"", padx=30).pack(side=tk.TOP)
+        self.label_info3 = tk.Label(self.frame_row_2, text="Zeichen für komplexen Anteil ist \"j\"", padx=30).pack(side=tk.TOP)
+        self.label_info4 = tk.Label(self.frame_row_2, text="Beispiel: -5.5+10j", padx=30).pack(side=tk.TOP)
         
         self.widgets["label_u0"]["self"] = tk.Label(self.frame_row_1, text=self.widgets["label_u0"]["text"], padx=30, pady=10)
         self.widgets["label_z1"]["self"] = tk.Label(self.frame_row_3, text=self.widgets["label_z1"]["text"], padx=30, pady=10)
@@ -178,11 +178,11 @@ class TKWindow(tk.Tk):
         """        
         self.widgets["picture"]["self"].create_image(300, 160, image=self.widgets["picture"]["image"])
         
-        self.widgets["entry_u0"]["self"].insert(0, "0")
-        self.widgets["entry_z1"]["self"].insert(0, "0")
-        self.widgets["entry_z2"]["self"].insert(0, "0")
-        self.widgets["entry_z3"]["self"].insert(0, "0")
-        self.widgets["entry_z4"]["self"].insert(0, "0")
+        self.widgets["entry_u0"]["self"].insert(0, "1")
+        self.widgets["entry_z1"]["self"].insert(0, "1")
+        self.widgets["entry_z2"]["self"].insert(0, "1")
+        self.widgets["entry_z3"]["self"].insert(0, "1")
+        self.widgets["entry_z4"]["self"].insert(0, "1")
     
     def init_figure(self):
         """Initialize matplotlib figure and corresponding widget.
