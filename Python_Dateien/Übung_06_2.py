@@ -35,23 +35,28 @@ class TKWindow(tk.Tk):
               "u": {"curve": np.zeros(figure_params["bounds"]+1), 
                       "label": "Spannung", 
                       "color": "blue",
-                      "linestyle": "solid"},
+                      "linestyle": "solid",
+                      "linewidth": 3},
               "i": {"curve": np.zeros(figure_params["bounds"]+1),
                       "label": "$Strom$", 
                       "color": "red",
-                      "linestyle": "solid"},
+                      "linestyle": "solid",
+                      "linewidth": 2},
               "p": {"curve": np.zeros(figure_params["bounds"]+1), 
                       "label": "$Wirkleistung$", 
                       "color": "orange",
-                      "linestyle": "solid"},
+                      "linestyle": "solid",
+                      "linewidth": 1.5},
               "s": {"curve": np.zeros(figure_params["bounds"]+1), 
                       "label": "$Scheinleistung$", 
                       "color": "green",
-                      "linestyle": "solid"},
+                      "linestyle": "dashed",
+                      "linewidth": 1.5},
               "q": {"curve": np.zeros(figure_params["bounds"]+1), 
                       "label": "$Blindleistung$", 
                       "color": "purple",
-                      "linestyle": "solid"}}
+                      "linestyle": "dotted",
+                      "linewidth": 1.5}}
     
     widgets = {"label_f": {"self": "",
                            "side": tk.LEFT,
@@ -190,11 +195,6 @@ class TKWindow(tk.Tk):
         self.twin1 = self.axes.twinx()
         self.twin2 = self.axes.twinx()
         
-        # Offset the right spine of twin2.  The ticks and label have already been
-        # placed on the right by twinx above.
-        self.twin2.spines.right.set_position(("axes", 1.2))
-        
-        self.axes.clear()
         self.axes.set_title(self.figure_params["title"])
         self.axes.set_xlabel(self.figure_params["xlabel"])
         self.axes.set_ylabel(self.figure_params["ylabel 1"])
@@ -204,18 +204,17 @@ class TKWindow(tk.Tk):
         self.axes.tick_params(axis="y", colors=self.graphs["u"]["color"])
         self.plot_axes(self.axes, self.graphs["u"])
         
-        self.twin1.clear()
         self.twin1.set_ylabel(self.figure_params["ylabel 2"])
-        # self.twin1.grid()
-        # self.twin1.minorticks_on()
-        self.axes.yaxis.label.set_color(self.graphs["i"]["color"])
-        self.axes.tick_params(axis="y", colors=self.graphs["i"]["color"])
+        self.twin1.grid()
+        self.twin1.minorticks_on()
+        self.twin1.yaxis.label.set_color(self.graphs["i"]["color"])
+        self.twin1.tick_params(axis="y", colors=self.graphs["i"]["color"])
         self.plot_axes(self.twin1, self.graphs["i"])
         
-        self.twin2.clear()
+        self.twin2.spines.right.set_position(("axes", 1.2)) # Offset the right spine of twin2
         self.twin2.set_ylabel(self.figure_params["ylabel 3"])
-        # self.twin2.grid()
-        # self.twin2.minorticks_on()
+        self.twin2.grid()
+        self.twin2.minorticks_on()
         self.plot_axes(self.twin2, self.graphs["p"])
         self.plot_axes(self.twin2, self.graphs["q"])
         self.plot_axes(self.twin2, self.graphs["s"])
@@ -242,11 +241,6 @@ class TKWindow(tk.Tk):
         if self.check_for_changed_input_values():
             self.update_graphs()
             
-            self.figure.subplots_adjust(right=0.75)
-            # Offset the right spine of twin2.  The ticks and label have already been
-            # placed on the right by twinx above.
-            self.twin2.spines.right.set_position(("axes", 1.2))
-            
             self.axes.clear()
             self.axes.set_title(self.figure_params["title"])
             self.axes.set_xlabel(self.figure_params["xlabel"])
@@ -259,21 +253,20 @@ class TKWindow(tk.Tk):
             
             self.twin1.clear()
             self.twin1.set_ylabel(self.figure_params["ylabel 2"])
-            # self.twin1.grid()
-            # self.twin1.minorticks_on()
-            self.axes.yaxis.label.set_color(self.graphs["i"]["color"])
-            self.axes.tick_params(axis="y", colors=self.graphs["i"]["color"])
+            self.twin1.minorticks_on()
+            self.twin1.yaxis.label.set_color(self.graphs["i"]["color"])
+            self.twin1.tick_params(axis="y", colors=self.graphs["i"]["color"])
             p_i = self.plot_axes(self.twin1, self.graphs["i"])
             
             self.twin2.clear()
+            self.twin2.spines.right.set_position(("axes", 1.2))
             self.twin2.set_ylabel(self.figure_params["ylabel 3"])
-            # self.twin2.grid()
-            # self.twin2.minorticks_on()
-            p_p = self.plot_axes(self.twin2, self.graphs["p"])
-            p_q = self.plot_axes(self.twin2, self.graphs["q"])
-            p_s = self.plot_axes(self.twin2, self.graphs["s"])
+            self.twin2.minorticks_on()
+            # p_p = self.plot_axes(self.twin2, self.graphs["p"])
+            # p_q = self.plot_axes(self.twin2, self.graphs["q"])
+            # p_s = self.plot_axes(self.twin2, self.graphs["s"])
 
-            self.axes.legend(handles=[p_u, p_i, p_p, p_q, p_s], loc=self.figure_params["legend_position"])
+            # self.axes.legend(handles=[p_u, p_i, p_p, p_q, p_s], loc=self.figure_params["legend_position"])
     
     def check_for_changed_input_values(self):
         """Method to check all input variables for updates/changes
@@ -289,6 +282,7 @@ class TKWindow(tk.Tk):
                         float(new_value) if "f" in widget else complex(new_value)
                     except ValueError:
                         self.widgets[widget]["self"].config(fg="red")
+                        self.widgets[widget]["old_value"] = ""
                     else:
                         self.widgets[widget]["self"].config(fg="black")
                         self.widgets[widget]["old_value"] = new_value
@@ -352,7 +346,8 @@ class TKWindow(tk.Tk):
                         graph["curve"], 
                         label = graph["label"], 
                         color = graph["color"], 
-                        linestyle = graph["linestyle"])
+                        linestyle = graph["linestyle"],
+                        linewidth = graph["linewidth"])
         return ax
 
 if __name__ == "__main__":
