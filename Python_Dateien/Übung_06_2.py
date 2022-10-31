@@ -24,46 +24,51 @@ class TKWindow(tk.Tk):
     
     figure_params = {"figsize": (12,7),
                      "title": "Signal Verläufe",
-                     "xlabel": "t in s",
+                     "xlabel": "t in ms",
                      "ylabel 1": "U in V",
                      "ylabel 2": "I in A",
                      "ylabel 3": "P in W, S in VA, Q in VAr",
                      "bounds": 100,
-                     "legend_position": "upper right"}
+                     "legend_position": "lower right"}
     
     graphs = {"t": np.linspace(0, figure_params["bounds"], figure_params["bounds"]+1),
               "u": {"curve": np.zeros(figure_params["bounds"]+1), 
-                      "label": "Spannung", 
+                      "label": "Spannung - U", 
                       "color": "blue",
                       "linestyle": "solid",
                       "linewidth": 3},
               "i": {"curve": np.zeros(figure_params["bounds"]+1),
-                      "label": "$Strom$", 
+                      "label": "$Strom - I$", 
                       "color": "red",
                       "linestyle": "solid",
                       "linewidth": 2},
               "p": {"curve": np.zeros(figure_params["bounds"]+1), 
-                      "label": "$Wirkleistung$", 
+                      "label": "$Augenblicksleistung - p(t)$", 
                       "color": "orange",
                       "linestyle": "solid",
                       "linewidth": 1.5},
-              "s": {"curve": np.zeros(figure_params["bounds"]+1), 
-                      "label": "$Scheinleistung$", 
-                      "color": "green",
+              "S": {"curve": np.zeros(figure_params["bounds"]+1), 
+                      "label": "$Scheinleistung - S$", 
+                      "color": "cyan",
                       "linestyle": "dashed",
-                      "linewidth": 1.5},
-              "q": {"curve": np.zeros(figure_params["bounds"]+1), 
-                      "label": "$Blindleistung$", 
-                      "color": "purple",
-                      "linestyle": "dotted",
+                      "linewidth": 3},
+              "P": {"curve": np.zeros(figure_params["bounds"]+1), 
+                      "label": "$Wirkleistung - P$", 
+                      "color": "lightgreen",
+                      "linestyle": "dashed",
+                      "linewidth": 2},
+              "Q": {"curve": np.zeros(figure_params["bounds"]+1), 
+                      "label": "$Blindleistung - Q$", 
+                      "color": "darkgreen",
+                      "linestyle": "dashed",
                       "linewidth": 1.5}}
     
     widgets = {"label_f": {"self": "",
                            "side": tk.LEFT,
-                           "text": "Frequenz f in Hz:"},
+                           "text": "Frequenz f in Hz (mindestens 10 Hz):"},
                "label_a": {"self": "",
                            "side": tk.LEFT,
-                           "text": "Amplitude in V:"},
+                           "text": "Spannungs Vector U in V:"},
                "label_z": {"self": "",
                            "side": tk.LEFT,
                            "text": "Widerstand Z in Ω:"},
@@ -176,9 +181,9 @@ class TKWindow(tk.Tk):
     def init_widgets(self):
         """Initialize widget variables after widget creation.
         """
-        self.widgets["entry_f"]["self"].insert(0, "50")
-        self.widgets["entry_a"]["self"].insert(0, "1")
-        self.widgets["entry_z"]["self"].insert(0, "1000")
+        self.widgets["entry_f"]["self"].insert(0, "10")
+        self.widgets["entry_a"]["self"].insert(0, "5")
+        self.widgets["entry_z"]["self"].insert(0, "j")
     
     def init_figure(self):
         """Initialize matplotlib figure and corresponding widget.
@@ -216,8 +221,9 @@ class TKWindow(tk.Tk):
         self.twin2.grid()
         self.twin2.minorticks_on()
         self.plot_axes(self.twin2, self.graphs["p"])
-        self.plot_axes(self.twin2, self.graphs["q"])
-        self.plot_axes(self.twin2, self.graphs["s"])
+        self.plot_axes(self.twin2, self.graphs["S"])
+        self.plot_axes(self.twin2, self.graphs["P"])
+        self.plot_axes(self.twin2, self.graphs["Q"])
     
     def place_widgets(self):
         """Place TKinter widgets.
@@ -245,28 +251,36 @@ class TKWindow(tk.Tk):
             self.axes.set_title(self.figure_params["title"])
             self.axes.set_xlabel(self.figure_params["xlabel"])
             self.axes.set_ylabel(self.figure_params["ylabel 1"])
+            self.axes.set_ylim(-np.absolute(complex(self.widgets["entry_a"]["variable"].get()))*1.1, np.absolute(complex(self.widgets["entry_a"]["variable"].get()))*1.1)
             self.axes.grid()
             self.axes.minorticks_on()
             self.axes.yaxis.label.set_color(self.graphs["u"]["color"])
             self.axes.tick_params(axis="y", colors=self.graphs["u"]["color"])
-            p_u = self.plot_axes(self.axes, self.graphs["u"])
+            plot_u = self.plot_axes(self.axes, self.graphs["u"])
             
             self.twin1.clear()
             self.twin1.set_ylabel(self.figure_params["ylabel 2"])
+            self.twin1.set_ylim(-np.absolute(complex(self.widgets["entry_a"]["variable"].get())/complex(self.widgets["entry_z"]["variable"].get()))*1.1, np.absolute(complex(self.widgets["entry_a"]["variable"].get())/complex(self.widgets["entry_z"]["variable"].get()))*1.1)
             self.twin1.minorticks_on()
             self.twin1.yaxis.label.set_color(self.graphs["i"]["color"])
             self.twin1.tick_params(axis="y", colors=self.graphs["i"]["color"])
-            p_i = self.plot_axes(self.twin1, self.graphs["i"])
+            plot_i = self.plot_axes(self.twin1, self.graphs["i"])
             
             self.twin2.clear()
             self.twin2.spines.right.set_position(("axes", 1.2))
             self.twin2.set_ylabel(self.figure_params["ylabel 3"])
+            max_power_value = np.max([np.max(self.graphs["p"]["curve"]), 
+                                      self.graphs["S"]["curve"][1], 
+                                      self.graphs["P"]["curve"][1], 
+                                      self.graphs["Q"]["curve"][1]])
+            self.twin2.set_ylim(-max_power_value*1.1, max_power_value*1.1)
             self.twin2.minorticks_on()
-            # p_p = self.plot_axes(self.twin2, self.graphs["p"])
-            # p_q = self.plot_axes(self.twin2, self.graphs["q"])
-            # p_s = self.plot_axes(self.twin2, self.graphs["s"])
+            plot_p = self.plot_axes(self.twin2, self.graphs["p"])
+            plot_S = self.plot_axes(self.twin2, self.graphs["S"])
+            plot_P = self.plot_axes(self.twin2, self.graphs["P"])
+            plot_Q = self.plot_axes(self.twin2, self.graphs["Q"])
 
-            # self.axes.legend(handles=[p_u, p_i, p_p, p_q, p_s], loc=self.figure_params["legend_position"])
+            self.twin2.legend(handles=[plot_u, plot_i, plot_p, plot_S, plot_P, plot_Q], loc=self.figure_params["legend_position"], framealpha=1)
     
     def check_for_changed_input_values(self):
         """Method to check all input variables for updates/changes
@@ -280,6 +294,12 @@ class TKWindow(tk.Tk):
                     new_value = self.widgets[widget]["variable"].get()
                     try:
                         float(new_value) if "f" in widget else complex(new_value)
+                        if "entry_f" in widget and float(new_value) < 10.0: raise ValueError("f should be grater or equal to 10 Hz")
+                        if "entry_z" in widget and type(new_value) != type(1.0): self.widgets["scale_theta"]["variable"].set(0.0)
+                        if "scale_theta" in widget and new_value != 0.0 and np.imag(complex(self.widgets["entry_z"]["variable"].get())) != 0.0: 
+                            old_z = complex(self.widgets["entry_z"]["variable"].get())
+                            self.widgets["entry_z"]["self"].delete(0,100)
+                            self.widgets["entry_z"]["self"].insert(0,[f"{np.real(old_z)}" if np.real(old_z) != 0.0 else 1.0])
                     except ValueError:
                         self.widgets[widget]["self"].config(fg="red")
                         self.widgets[widget]["old_value"] = ""
@@ -302,34 +322,57 @@ class TKWindow(tk.Tk):
     
     def update_graphs(self):
         """Update graph values.
-        """        
+        """
+        frequency = float(self.widgets["entry_f"]["variable"].get())
+        u_vector = complex(self.widgets["entry_a"]["variable"].get())
+        z_vector = complex(self.widgets["entry_z"]["variable"].get())
+        theta = self.widgets["scale_theta"]["variable"].get()
+        
+        û = np.absolute(u_vector)
+        U_eff = û/2**0.5
+        phi_u = np.angle(u_vector)
+        
+        i_vector = u_vector / z_vector
+        î = np.absolute(i_vector)
+        I_eff = î/2**0.5
+        phi_i = np.angle(i_vector)
+        
+        U_complex = U_eff * (np.cos(phi_u) + 1j * np.sin(phi_u))
+        I_complex = I_eff * (np.cos(phi_i) + 1j * np.sin(phi_i))
+        S_complex = U_complex * np.conjugate(I_complex)
+        
+        P = û*î/2/np.pi*(np.pi*(1-np.absolute(theta)/180)-np.sin(2*np.pi*np.absolute(theta)/180)/2)
+        S = û*î/2*(1/np.pi*(np.pi*(1-np.absolute(theta)/180)-np.sin(2*np.pi*np.absolute(theta)/180)/2))**0.5
+        Q = (S**2-P**2)**0.5
+        
         for t in self.graphs["t"]:
-            f = float(self.widgets["entry_f"]["variable"].get())
-            u = complex(self.widgets["entry_a"]["variable"].get())
-            z = complex(self.widgets["entry_z"]["variable"].get())
-            theta = self.widgets["scale_theta"]["variable"].get()
+            amplitude_is_zero = self.phase_control(t, frequency, u_vector, theta)
             
-            i = u/z
-            a_u = np.absolute(u)
-            phi_u = np.angle(u)
-            a_i = np.absolute(u/z)
-            phi_i = np.angle(u) - np.angle(z)
-            phi_i2 = np.angle(i)                #test
-            s = u*np.conjugate(i)
-            a_s = np.absolute(s)
-            phi_s = np.angle(s)
-            p = np.real(s)
-            a_p = np.absolute(p)
-            phi_p = np.angle(p)
-            q = np.imag(s)
-            a_q = np.absolute(q)
-            phi_q = np.angle(q)
+            wt = 2*np.pi*frequency*t/1000 # angular frequency * time
+            u_complex = û * (np.cos(wt+phi_u) + 1j * np.sin(wt+phi_u)) * amplitude_is_zero
+            i_complex = î * (np.cos(wt+phi_i) + 1j * np.sin(wt+phi_i)) * amplitude_is_zero
             
-            self.graphs["u"]["curve"][int(t)] = a_u*np.sin(2*np.pi*f*t/1000+phi_u)
-            self.graphs["i"]["curve"][int(t)] = a_i*np.sin(2*np.pi*f*t/1000+phi_i)
-            self.graphs["p"]["curve"][int(t)] = a_p*np.sin(2*np.pi*f*t/1000+phi_p)
-            self.graphs["s"]["curve"][int(t)] = a_s*np.sin(2*np.pi*f*t/1000+phi_i)
-            self.graphs["q"]["curve"][int(t)] = a_q*np.sin(2*np.pi*f*t/1000+phi_i)
+            p = np.real(u_complex)*np.real(i_complex)
+            
+            self.graphs["u"]["curve"][int(t)] = np.real(u_complex)
+            self.graphs["i"]["curve"][int(t)] = np.real(i_complex)
+            self.graphs["p"]["curve"][int(t)] = p
+            self.graphs["S"]["curve"][int(t)] = S if theta != 0.0 else np.absolute(S_complex) # = û*î/2
+            self.graphs["P"]["curve"][int(t)] = P if theta != 0.0 else np.real(S_complex)
+            self.graphs["Q"]["curve"][int(t)] = Q if theta != 0.0 else np.imag(S_complex)
+    
+    def phase_control(self, t, frequency, u_vector, theta):
+        T = 1/frequency
+        halbe_perioden_in_zeitfenster = int(0.2/T)
+        totzeit = T*theta/360 # T/2 * theta/180
+        versatz_durch_phasenverschiebung = T*np.angle(u_vector*1j)/2/np.pi#+T/4
+        for k in range(-1,halbe_perioden_in_zeitfenster+2):
+            ns = T*k/2-versatz_durch_phasenverschiebung
+            if theta >= 0 and t/1000 >= ns and t/1000 < ns+totzeit:
+                return 0.0
+            elif theta < 0 and t/1000 <= ns and t/1000 > ns+totzeit:
+                return 0.0
+        return 1.0
     
     def plot_axes(self, axes, graph, x=None):
         """Plots given graph in given axes object.
