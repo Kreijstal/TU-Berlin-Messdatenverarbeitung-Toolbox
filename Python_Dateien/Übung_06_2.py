@@ -362,6 +362,17 @@ class TKWindow(tk.Tk):
             self.graphs["Q"]["curve"][int(t)] = Q if theta != 0.0 else np.imag(S_complex)
     
     def phase_control(self, t, frequency, u_vector, theta):
+        """Returns 0 when the signal should be zero due to theta
+
+        Args:
+            t (float): The given time step
+            frequency (float): Frequency of the signal
+            u_vector (complex): Phasor of the signal
+            theta (float): Phase control angle
+
+        Returns:
+            flaot: 0.0 or 1.0 depending on the result of the calculations
+        """        
         T = 1/frequency
         halbe_perioden_in_zeitfenster = int(0.2/T)
         totzeit = T*theta/360 # T/2 * theta/180
