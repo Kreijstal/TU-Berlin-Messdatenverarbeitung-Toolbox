@@ -13,10 +13,14 @@ Beispiel: Thema Messbrücke: Es sollen die 4 Impedanzen einer Messbrücke sowie 
 
 ## Aufgaben
 
-- [ ] Einarbeitung in die Themengebiete
-- [ ] Erarbeitung sinnvoller Szenarien zur Veranschaulichung
-- [ ] Implementierung dieser Szenarien
+- [x] Einarbeitung in die Themengebiete
+- [x] Erarbeitung sinnvoller Szenarien zur Veranschaulichung
+- [x] Implementierung dieser Szenarien
 - [ ] Nutzerfreundliches und sauberes Programmieren
+- [ ] Code Kommentieren
+- [ ] Test Dokumentation
+- [ ] Docstring aus Python Files in Wartungshandbuch übertragen
+- [ ] Presentation vorbereiten und Termin festlegen
 
 ```
 Betreuer: Daniel Thomanek
@@ -29,8 +33,8 @@ Betreuer: Daniel Thomanek
 - [X] Übung 03 - Statische Eigenschaften von Messystemen - @eriktroendle
 - [x] Übung 04 - Dynamische Eigenschaften von Messystemen - @kreijstal
 - [X] Übung 05 - Digitale Messdatenerfassung - @eriktroendle
-- [ ] Übung 06 - Leistungsmessung - @all
-- [ ] Übung 07 - Messbrücken - @borismaurer
+- [X] Übung 06 - Leistungsmessung - @all
+- [X] Übung 07 - Messbrücken - @borismaurer
 
 @borismaurer
 @eriktroendle
