@@ -405,5 +405,7 @@ f= Frequenz""")
         self.axes[1].yaxis.set_label_position("right")
         #10000*10*10 #self.resizable(False, False) #self.columnconfigure(0, weight=0) #self.columnconfigure(1, weight=10)
         
-exercise_06 = TKWindow(window_title)
-exercise_06.window_loop()
+if __name__ == "__main__":
+    exercise_06 = TKWindow(window_title)
+    exercise_06.window_loop()
+

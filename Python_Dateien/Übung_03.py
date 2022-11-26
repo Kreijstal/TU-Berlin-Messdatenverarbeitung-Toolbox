@@ -84,6 +84,7 @@ class TKWindow(tk.Tk):
         self.init_figure()
         self.init_axes()
         self.place_widgets()
+        self.animation_object = animation.FuncAnimation(self.figure, self.animate, interval = 100)
     
     def init_window(self, title):
         """Set´s parameters for the window.
@@ -186,7 +187,7 @@ class TKWindow(tk.Tk):
     def window_loop(self):
         """Startin animation and window loop.
         """        
-        self.animation_object = animation.FuncAnimation(self.figure, self.animate, interval = 100)
+        
         self.mainloop()
     
     def animate(self, i):

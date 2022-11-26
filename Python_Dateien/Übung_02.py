@@ -225,9 +225,9 @@ text3=tk.StringVar()
 
 root.geometry("800x600")
 root.title('Übung 2')  
-Corona_rules=tk.StringVar()
-Corona_rules.set(liste_reg_and_interp[0])
-menu= tk.OptionMenu(root, Corona_rules, *liste_reg_and_interp,command=drop_down_change)
+dropDownVariable=tk.StringVar()
+dropDownVariable.set(liste_reg_and_interp[0])
+menu= tk.OptionMenu(root, dropDownVariable, *liste_reg_and_interp,command=drop_down_change)
 menu.config(width=30, font=('Times New Roman', 9))
 menu.grid(row=0, column=10)
 
@@ -276,7 +276,7 @@ emp=tk.Label(root, text="Unbekannte Größe ").grid(row=13, column=0)
 
 number_array.append(tk.Entry(root,justify='center'))
 number_array[10].grid(row=14, column=0)
-number_array[10].insert(tk.END, '3') 
+number_array[10].insert(tk.END, '30') 
 button2 = tk.Button(root,text="Calculate 2",command=res)
 button2.grid(row=15, column=0)
 
@@ -287,4 +287,6 @@ resulta2a.grid(row=17,column=0)
 result_labely3=tk.Label(root, text="\u03A9")
 result_labely3.grid(row=17, column=1)
   
-root.mainloop()
+
+if __name__ == "__main__":
+    root.mainloop()

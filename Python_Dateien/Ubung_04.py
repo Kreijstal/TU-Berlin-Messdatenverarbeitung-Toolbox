@@ -114,5 +114,6 @@ plt.grid()
 textlab=Tk.Label(root,text=yaml.dump({k: float(v) for k, v in control.matlab.stepinfo(sys).items()}))
 textlab.grid(column=2,row=0, rowspan = 7)
 root.title("Übung 4 MT1")
-root.mainloop()
+if __name__ == "__main__":
+    root.mainloop()
 plt.close('all')

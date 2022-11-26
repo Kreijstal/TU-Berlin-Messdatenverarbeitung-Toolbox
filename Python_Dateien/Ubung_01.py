@@ -144,4 +144,6 @@ fig.tight_layout()
 ani=animation.FuncAnimation(fig, animate, np.arange(1, 64), interval=100,
         blit=False)
 root.title("Übung 1 MT1")
-root.mainloop()
+if __name__ == "__main__":
+    root.mainloop()
+
