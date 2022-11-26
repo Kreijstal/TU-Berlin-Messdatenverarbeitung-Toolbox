@@ -53,6 +53,7 @@ def animate(i):
     newscale1=anzahlVonBins.get()
     newscale2=anzahlSamples.get()
     newscale3=freiheitgradVonStudenTverteilung.get()
+    leg=legend.get()
     if var1.get()==0 and oldscale1==newscale1 and oldscale2==newscale2 and oldscale3==newscale3:
         pass
     else:
@@ -65,7 +66,12 @@ def animate(i):
 
         ax.axvspan(datemsatz1.mean()-datemsatz1.std(),datemsatz1.mean()+datemsatz1.std(), ymax=hist[0].max() ,alpha=0.5, color='red',label="Vertrauensinterval 1$\sigma$, 68,3%")
         #ax.fill_between()
-        ax.legend(loc="upper right")
+        if leg:
+            ax.legend(loc="upper right")
+        else:
+            legen=ax.get_legend()
+            if legen:
+                legen.remove()
         ax2.cla()
         ax2.set_title("Student T Verteilung")
         ax2.set_ylabel('Häufigkeit')
@@ -97,6 +103,13 @@ def generate_Datensatz():
         freiheitgradVonStudenTverteilung.grid(column=2,row=5)
         freiheitgradVonStudenTverteilung.configure(state="normal")
         IstRefreshSamplesGecheckht.configure(state="normal")
+def do_popup(menu):
+    def do_popup(event):
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            menu.grab_release()
+    return do_popup
 
 root = Tk.Tk()
 anzahlVonBins = Tk.Scale(root,orient=Tk.HORIZONTAL,length=300, from_=2, to=100)
@@ -115,6 +128,12 @@ freiheitgradVonStudenTverteilung = Tk.Scale(root,orient=Tk.HORIZONTAL,length=300
 freiheitgradVonStudenTverteilung.grid(column=2,row=5)
 var1=Tk.IntVar()
 var2=Tk.IntVar()
+legend=Tk.BooleanVar()
+
+men=Tk.Menu(root)
+legend.set(True)
+men.add_checkbutton(label="Zeige Legende",onvalue=1,offvalue=0,variable=legend)
+canvas.get_tk_widget().bind("<Button-3>",do_popup(men))
 IstRefreshSamplesGecheckht=Tk.Checkbutton(root, text='refresh samples/frame',variable=var1, onvalue=1, offvalue=0)
 IstRefreshSamplesGecheckht.grid(column=1,row=0)
 istGefroren=Tk.Checkbutton(root, text='Freeze datensatz',variable=var2, onvalue=1, offvalue=0,command=generate_Datensatz)

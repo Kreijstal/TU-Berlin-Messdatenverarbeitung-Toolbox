@@ -327,7 +327,7 @@ So hoffentlich sieht de fenster so aus:
         self.m.add_command(label="Kondensator + Widerstand",command=lambda:change_text_in_input("u/(du+u*99)*2*np.pi*f*2"))
         self.m.add_command(label="Spule",command=lambda:change_text_in_input("u/(2*np.pi*f*U)"))
         self.m.add_command(label="Diode",command=lambda:change_text_in_input("9999999 if u<0 else 1"))
-        self.m.add_command(label="Dimmer",command=lambda:change_text_in_input("99999999 if (du>0 and 9/10*a>u>0)or(du<0 and -9/10*a<u<0) else 1"))
+        self.m.add_command(label="DIAC",command=lambda:change_text_in_input("99999999 if (du>0 and 9/10*a>u>0)or(du<0 and -9/10*a<u<0) else 1"))
 
         self.dictWidgets["Impedanz"].bind("<Button-3>",do_popup(self.m))
         CreateToolTip(self.dictWidgets["Impedanz"],"""Impedanz als Funktion abhängig von Spannung und Zeit
@@ -367,6 +367,7 @@ f= Frequenz""")
         self.canvm.add_checkbutton(label="Effektive Werte zeigen",onvalue=1,offvalue=0,variable=self.showeff)
         self.canvm.add_checkbutton(label="Y Achse symmetrisch",onvalue=1,offvalue=0,variable=self.sym)
         self.canvm.add_checkbutton(label="Zeige Legende",onvalue=1,offvalue=0,variable=self.showlegend)
+        self.canvm.add_separator()
         self.canvm.add_cascade(label="View",menu=self.viewm)
         self.viewm.add_command(label="View 1",command=lambda:self.create_axes(1))
         self.viewm.add_command(label="View 2",command=lambda:self.create_axes(2))
