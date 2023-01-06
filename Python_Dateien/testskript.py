@@ -1,38 +1,27 @@
 import numpy as np
-onesecond=30000
 #Ubung_01.root.mainloop()
 i=0
 def test1():
-    import Ubung_01
-    i=0
-    while i<onesecond:
-        i=i+1
-        Ubung_01.root.update_idletasks()
-        Ubung_01.root.update()
-
-    Ubung_01.anzahlVonBins.set(30)
-    i=0
-    while i<onesecond*3:
-        i=i+1
-        Ubung_01.root.update_idletasks()
-        Ubung_01.root.update()
-    Ubung_01.var1.set(1)
-    i=0
-    while i<onesecond*2:
-        i=i+1
-        Ubung_01.root.update_idletasks()
-        Ubung_01.root.update()
-    Ubung_01.anzahlSamples.set(6000)
-    Ubung_01.freiheitgradVonStudenTverteilung.set(50)
-    i=0
-    while i<onesecond*10:
-        i=i+1
-        Ubung_01.root.update_idletasks()
-        Ubung_01.root.update()
-    print("Ubung 1 läuft")
-    Ubung_01.root.destroy()
-#test1()
+    onesecond=10000
+    import Ubung_01 as ue1
+    def wait(ii):
+        i=0
+        while i<onesecond*ii:
+            i=i+1
+            ue1.root.dooneevent(ue1.Tk._tkinter.ALL_EVENTS|ue1.Tk._tkinter.DONT_WAIT)
+    wait(1)
+    ue1.var1.set(1)
+    wait(1)
+    ue1.anzahlVonBins.set(30)
+    ue1.anzahlSamples.set(6000)
+    wait(1)
+    ue1.freiheitgradVonStudenTverteilung.set(50)
+    wait(1)
+    ue1.root.destroy()
+test1()
 def test2():
+    onesecond=3000
+    import Ubung_01
     i=0
     import Übung_02 as ue2
     def show(ii):
@@ -41,8 +30,7 @@ def test2():
         i=0
         while i<onesecond*ii:
             i=i+1
-            ue2.root.update_idletasks()
-            ue2.root.update()
+            ue2.root.dooneevent(ue2.tk._tkinter.ALL_EVENTS|ue2.tk._tkinter.DONT_WAIT)
     while i<onesecond*2:
         i=i+1
         ue2.root.update_idletasks()
@@ -70,41 +58,168 @@ def test2():
     print("Ubung 2 läuft")
     ue2.root.destroy()
     #ue2.button.
-#test2()
+test2()
 def test3():
-    onesecond=30000
+    onesecond=30
     import Übung_03 as ue3
-    fuckyou=ue3.TKWindow("Ubung 3 Wird jetzt getestet!")
+    ue3TKClass=ue3.TKWindow("Ubung 3 Wird jetzt getestet!")
     def wait(ii):
         i=0
         while i<onesecond*ii:
             i=i+1
-            fuckyou.update_idletasks()
-            fuckyou.update()
+            ue3TKClass.dooneevent(ue3.tk._tkinter.ALL_EVENTS|ue3.tk._tkinter.DONT_WAIT)
+    def slider3test():
+        a=ue3TKClass.widget_params["linearity_scale"]["from"]
+        b=ue3TKClass.widget_params["linearity_scale"]["to"]
+        i = a
+        while i < b:
+            ue3TKClass.scales['linearity'].set(i)
+            i += (b-a)/10
+            wait(1)
+    def slider2test():
+        a=ue3TKClass.widget_params["amplification_scale"]["from"]
+        b=ue3TKClass.widget_params["amplification_scale"]["to"]
+        i = a
+        while i < b:
+            slider3test()
+            ue3TKClass.scales['amplification'].set(i)
+            i += (b-a)/10
+            wait(1)
+    def slider1test():
+        a=ue3TKClass.widget_params["offset_scale"]["from"]
+        b=ue3TKClass.widget_params["offset_scale"]["to"]
+        i = a
+        while i < b:
+            slider2test()
+            ue3TKClass.scales['offset'].set(i)
+            i += (b-a)/10
+            wait(1)
     def button1test():
-        fuckyou.widget_params["linearity_checkbox"]["variable"].set(True)
+        slider1test()
+        ue3TKClass.widget_params["linearity_checkbox"]["variable"].set(True)
         wait(1)
-        fuckyou.widget_params["linearity_checkbox"]["variable"].set(False)
+        ue3TKClass.widget_params["linearity_checkbox"]["variable"].set(False)
         wait(1)
     def button2test():
         button1test()
-        fuckyou.widget_params["amplification_checkbox"]["variable"].set(True)
+        ue3TKClass.widget_params["amplification_checkbox"]["variable"].set(True)
         wait(1)
         button1test()
-        fuckyou.widget_params["amplification_checkbox"]["variable"].set(False)
+        ue3TKClass.widget_params["amplification_checkbox"]["variable"].set(False)
         wait(1)
     def button3test():
         button2test()
-        fuckyou.widget_params["offset_checkbox"]["variable"].set(True)
+        ue3TKClass.widget_params["offset_checkbox"]["variable"].set(True)
         wait(1)
         button2test()
-        fuckyou.widget_params["offset_checkbox"]["variable"].set(False)
+        ue3TKClass.widget_params["offset_checkbox"]["variable"].set(False)
         wait(1)
     button3test()
     wait(2)
-
+    ue3TKClass.destroy()
 test3()
-import Ubung_04
-import Ubung_05
-import Übung_06
-import Übung_07
+def test4():
+    onesecond=5
+    import Ubung_04 as ue4
+    def wait(ii):
+        i=0
+        while i<onesecond*ii:
+            i=i+1
+            ue4.root.dooneevent(ue4.Tk._tkinter.ALL_EVENTS|ue4.Tk._tkinter.DONT_WAIT)
+    def slider2test():
+        a=0
+        b=100
+        i2 = a
+        while i2 <= b:
+            ue4.scale2.set(i2)
+            ue4.onfrequenzChange(i2)
+            i2 += (b-a)/10
+            wait(1)
+
+
+    def slider1test():
+        a=-5
+        b=5
+        i3 = a
+        while i3 <= b:
+            slider2test()
+            ue4.scale.set(i3)
+            ue4.onZetaChange(i3)
+            i3 += (b-a)/10
+            wait(1)
+    slider1test()
+    wait(1)
+    ue4.root.destroy()
+
+test4()
+def test5():
+    import Ubung_05 as ue5
+    onesecond=30000
+    def wait(ii):
+        i=0
+        while i<onesecond*ii:
+            i=i+1
+            ue5TKClass.update_idletasks()
+            ue5TKClass.update()
+    ue5TKClass=ue5.TKWindow("Ubung 5 Wird jetzt getestet!")
+    def slider1test():
+        for i in range(2,9):
+            ue5TKClass.bits_scale.set(i)
+            ue5TKClass.animate(i)
+            ue5TKClass.figure_canvas.draw()
+
+            wait(1)
+    slider1test()
+    wait(1)
+    ue5TKClass.destroy()
+
+test5()
+def test6():
+    import Übung_06 as ue6
+    onesecond=100
+    def wait(ii):
+        i=0
+        while i<onesecond*ii:
+            i=i+1
+            ue6TKClass.update_idletasks()
+            ue6TKClass.update()
+            ue6TKClass.animate(i*ue6TKClass.tx)
+            ue6TKClass.figure_canvas.draw()
+    ue6TKClass=ue6.TKWindow("Ubung 6 Wird jetzt getestet!")
+    ue6TKClass.dictWidgets["frequency"].set(137)
+    ue6TKClass.dictWidgets["amplitude"].set(13)
+    #ue6TKClass.dictWidgets["dropdown"].set("sinus")
+    ue6TKClass.onSelection("sinus")
+    ue6TKClass.create_axes(4)
+    wait(1)
+    ue6TKClass.destroy()
+test6()
+def test7():
+    import Übung_07 as ue7
+    onesecond=20
+    def wait(ii):
+        i=0
+        while i<onesecond*ii:
+            i=i+1
+            ue7TKClass.update_idletasks()
+            ue7TKClass.update()
+            ue7TKClass.animate(i)
+            ue7TKClass.figure_canvas.draw()
+    ue7TKClass=ue7.TKWindow("Ubung 7 Wird jetzt getestet!")
+    wait(1)
+    ue7TKClass.widgets["entry_u0"]["self"].delete(0,ue7.tk.END)
+    ue7TKClass.widgets["entry_u0"]["self"].insert(ue7.tk.END,"5")
+    ue7TKClass.widgets["entry_z1"]["self"].delete(0,ue7.tk.END)
+    ue7TKClass.widgets["entry_z1"]["self"].insert(ue7.tk.END,"4+j")
+    ue7TKClass.widgets["entry_z2"]["self"].delete(0,ue7.tk.END)
+    ue7TKClass.widgets["entry_z2"]["self"].insert(ue7.tk.END,"3+2j")
+    ue7TKClass.widgets["entry_z3"]["self"].delete(0,ue7.tk.END)
+    ue7TKClass.widgets["entry_z3"]["self"].insert(ue7.tk.END,"-4-5j")
+    ue7TKClass.widgets["entry_z4"]["self"].delete(0,ue7.tk.END)
+    ue7TKClass.widgets["entry_z4"]["self"].insert(ue7.tk.END,"-3")
+    wait(1)
+ 
+test7()
+
+
+#mingw -c "./venv/bin/python Python_Dateien/testskript.py"

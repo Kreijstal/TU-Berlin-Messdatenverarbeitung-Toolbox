@@ -5,7 +5,7 @@ Created on 2022
 6. Leistungsmessung
 • Anzeige der Leistungskurven für einen einstellbaren Verbraucher, linear oder nichtlinear mit Oberwellen.
 
-@author: Datenschutz bitte.
+@author: Juan
 """
 class Switch(object):
     #Quelle : https://codegree.de/python-switch-case/
@@ -117,7 +117,8 @@ class TKWindow(tk.Tk):
 
     def createWidgets(self):
         self.figure = Figure(figsize=(10,7), dpi=100)
-        self.canvas = FigureCanvasTkAgg(self.figure, self).get_tk_widget()
+        self.figure_canvas = FigureCanvasTkAgg(self.figure, self)
+        self.canvas = self.figure_canvas.get_tk_widget()
         self.figure.tight_layout()
         self.m = tk.Menu(self, tearoff=0)
         self.canvm = tk.Menu(self, tearoff=0)

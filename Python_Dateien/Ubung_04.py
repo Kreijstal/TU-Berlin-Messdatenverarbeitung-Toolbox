@@ -116,4 +116,4 @@ textlab.grid(column=2,row=0, rowspan = 7)
 root.title("Übung 4 MT1")
 if __name__ == "__main__":
     root.mainloop()
-plt.close('all')
+    plt.close('all')
