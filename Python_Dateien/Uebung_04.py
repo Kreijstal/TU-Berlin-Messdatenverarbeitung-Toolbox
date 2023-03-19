@@ -10,9 +10,7 @@ import matplotlib.animation as animation
 import control.matlab
 import yaml
 
-# https://www.desmos.com/calculator/jp1ejacymw
-plt.ioff()
-plt.close()
+
 try:
     opts, args = getopt.getopt(sys.argv[1:], "r", ["render"])
 except getopt.GetoptError:
@@ -40,106 +38,142 @@ Und die Polen sind an der Stellen
             pad=1,
         )
         latex_eq.as_svg().as_drawing().rasterize().savePng("eq1.png")
-# fig = plt.Figure(figsize=(5,5))
-root = Tk.Tk()
+# https://www.desmos.com/calculator/jp1ejacymw
 
-##scale.pack()
-Tk.Label(root, text="2te Ordnung LTI").grid(column=0, row=0)
-canvas = Tk.Canvas(root)
-# https://www.electrical4u.com/time-response-of-second-order-control-system/
-photoimage = Tk.PhotoImage(master=canvas, file=__file__ + "/../eq1.png")
-canvas.create_image(160, 130, image=photoimage)
-canvas.grid(column=0, row=1, rowspan=10)
-# Tk.Label(root,text="Es ist möglich mit den Sliders zu Spielen").grid(column=0,row=1)
-w_s = 1
-z = 1
-sys = control.tf([w_s ^ 2], [1, w_s * z, w_s ^ 2])
-plt.figure("Bode", figsize=(6, 5))
-control.bode_plot(sys)
-canvas2 = FigureCanvasTkAgg(plt.gcf(), master=root)
-canvas2.get_tk_widget().grid(column=0, row=11, columnspan=1, rowspan=7, padx=0, pady=0)
+class LTIApp:
+    def __init__(self):
+        self.root = Tk.Tk()
+        self.setup_ui()
+        self.root.title("Übung 4 MT1")
 
-ani = animation.FuncAnimation(plt.gcf(), lambda a: None, [1], interval=100, blit=False)
+    def setup_ui(self):
+        plt.ioff()
+        plt.close()
 
+        # Create UI elements
+        self.create_labels()
+        self.create_bode_plot()
+        self.create_pzmap()
+        self.create_step_response()
+        self.create_scales()
+        self.create_step_info()
+        self.create_image()
 
-def onVarChange():
-    # print(([w_s^2], [1, w_s* z,w_s^2]))
-    sys = control.tf([w_s ^ 2], [1, w_s * z, w_s ^ 2])
-    # plt.close()
-    plt.figure("Bode")
-    plt.clf()
-    control.bode_plot(sys)
-    # plt.gcf().canvas.draw()
-    # plt.gcf().canvas.flush_events()
-    plt.figure("Bode")
-    plt.title("Bode plot")
-    plt.figure("pzmap")
-    plt.clf()
-    control.pzmap(sys)
-    # plt.gcf().canvas.draw()
-    # plt.gcf().canvas.flush_events()
-    plt.figure("step_response")
-    plt.cla()
-    t, y = control.step_response(sys)
-    plt.plot(t, y)
-    plt.title("Sprungantwort")
-    plt.grid()
-    # plt.gcf().canvas.draw()
-    # plt.gcf().canvas.flush_events()
-    textlab.config(
-        text=yaml.dump({k: float(v) for k, v in control.matlab.stepinfo(sys).items()})
-    )
-    # canvas2.get_tk_widget().grid_remove()
-    # canvas2 = FigureCanvasTkAgg(plt.gcf(), master=root)
-    # canvas2.get_tk_widget().grid(column=0,row=11,columnspan = 2, rowspan = 7, padx = 0, pady = 0)
+    def create_labels(self):
+        Tk.Label(self.root, text="2te Ordnung LTI").grid(column=0, row=0)
+        Tk.Label(self.root, text="zeta").grid(column=1, row=0)
+        Tk.Label(self.root, text="Eigenfrequenz").grid(column=1, row=2)
+
+    def create_image(self):
+        canvas = Tk.Canvas(self.root)
+        # https://www.electrical4u.com/time-response-of-second-order-control-system/
+        self.photoimage = Tk.PhotoImage(master=canvas, file=__file__ + "/../eq1.png")
+        canvas.create_image(160, 130, image=self.photoimage)
+        canvas.grid(column=0, row=1, rowspan=10)
 
 
-def onZetaChange(_):
-    global z
-    z = float(_)
-    onVarChange()
+    def create_bode_plot(self):
+        self.w_s = 1
+        self.z = 1
+        self.sys = control.tf([self.w_s ** 2], [1, self.w_s * self.z, self.w_s ** 2])
+
+        plt.figure("Bode", figsize=(6, 5))
+        control.bode_plot(self.sys)
+        self.canvas2 = FigureCanvasTkAgg(plt.gcf(), master=self.root)
+        self.canvas2.get_tk_widget().grid(column=0, row=11, columnspan=1, rowspan=7, padx=0, pady=0)
+
+        self.ani = animation.FuncAnimation(plt.gcf(), lambda a: None, [1], interval=100, blit=False)
+
+    def create_pzmap(self):
+        fig = plt.figure("pzmap", figsize=(6, 5))
+        control.pzmap(self.sys)
+        self.canvas3 = FigureCanvasTkAgg(fig, master=self.root)
+        self.canvas3.get_tk_widget().grid(column=1, row=11, columnspan=1, rowspan=7, padx=0, pady=0)
+
+        self.ani2 = animation.FuncAnimation(plt.gcf(), lambda a: None, [1], interval=100, blit=False)
+
+    def create_step_response(self):
+        fig2 = plt.figure("step_response", figsize=(5, 5))
+        self.canvas4 = FigureCanvasTkAgg(fig2, master=self.root)
+        self.canvas4.get_tk_widget().grid(column=2, row=11, columnspan=1, rowspan=7, padx=0, pady=0)
+
+        self.ani3 = animation.FuncAnimation(plt.gcf(), lambda a: None, [1], interval=100, blit=False)
+
+        t, y = control.step_response(self.sys)
+        plt.title("Sprungantwort")
+        plt.plot(t, y)
+        plt.grid()
+
+    def create_scales(self):
+        self.scale = Tk.Scale(
+            self.root,
+            orient=Tk.HORIZONTAL,
+            length=300,
+            from_=-5,
+            to=5,
+            resolution=0.01,
+            command=self.on_zeta_change,
+        )
+        self.scale.grid(column=1, row=1, sticky="ew")
+        self.scale2 = Tk.Scale(
+            self.root,
+            orient=Tk.HORIZONTAL,
+            length=300,
+            from_=0,
+            to=100,
+            command=self.on_frequenz_change,
+        )
+        self.scale2.grid(column=1, row=3, sticky="ew")
+
+    def create_step_info(self):
+        self.textlab = Tk.Label(
+            self.root,
+            text=yaml.dump({k: float(v) for k, v in control.matlab.stepinfo(self.sys).items()})
+        )
+        self.textlab.grid(column=2, row=0, rowspan=7)
+
+    def on_zeta_change(self, value):
+        self.z = float(value)
+        self.on_var_change()
+
+    def on_frequenz_change(self, value):
+        self.w_s = int(value)
+        self.on_var_change()
+
+    def on_var_change(self):
+        self.sys = control.tf([self.w_s ** 2], [1, self.w_s * self.z, self.w_s ** 2])
+
+        # Update Bode plot
+        plt.figure("Bode")
+        plt.clf()
+        control.bode_plot(self.sys)
+
+        # Update pzmap
+        plt.figure("pzmap")
+        plt.clf()
+        control.pzmap(self.sys)
+
+        # Update step response
+        plt.figure("step_response")
+        plt.cla()
+        t, y = control.step_response(self.sys, T=np.linspace(0, 10, num=1000))
+        plt.plot(t, y)
+        plt.title("Sprungantwort")
+        plt.grid()
+
+        try:
+            step_info = control.matlab.stepinfo(self.sys)
+            step_info_text = yaml.dump({k: float(v) for k, v in step_info.items()})
+        except IndexError:
+            step_info_text = "Error calculating step info."
+
+        self.textlab.config(text=step_info_text)
+
+    def run(self):
+        self.root.mainloop()
+        plt.close("all")
 
 
-def onfrequenzChange(_):
-    global w_s
-    w_s = int(_)
-    onVarChange()
-
-
-Tk.Label(root, text="zeta").grid(column=1, row=0)
-scale = Tk.Scale(
-    root,
-    orient=Tk.HORIZONTAL,
-    length=300,
-    from_=-5,
-    to=5,
-    resolution=0.01,
-    command=onZetaChange,
-)
-scale.grid(column=1, row=1, sticky="ew")
-Tk.Label(root, text="Eigenfrequenz").grid(column=1, row=2)
-scale2 = Tk.Scale(
-    root, orient=Tk.HORIZONTAL, length=300, from_=0, to=100, command=onfrequenzChange
-)
-scale2.grid(column=1, row=3, sticky="ew")
-fig = plt.figure("pzmap", figsize=(6, 5))
-control.pzmap(sys)
-canvas3 = FigureCanvasTkAgg(fig, master=root)
-canvas3.get_tk_widget().grid(column=1, row=11, columnspan=1, rowspan=7, padx=0, pady=0)
-ani2 = animation.FuncAnimation(plt.gcf(), lambda a: None, [1], interval=100, blit=False)
-fig2 = plt.figure("step_response", figsize=(5, 5))
-canvas4 = FigureCanvasTkAgg(fig2, master=root)
-canvas4.get_tk_widget().grid(column=2, row=11, columnspan=1, rowspan=7, padx=0, pady=0)
-ani3 = animation.FuncAnimation(plt.gcf(), lambda a: None, [1], interval=100, blit=False)
-t, y = control.step_response(sys)
-plt.title("Sprungantwort")
-plt.plot(t, y)
-plt.grid()
-textlab = Tk.Label(
-    root, text=yaml.dump({k: float(v) for k, v in control.matlab.stepinfo(sys).items()})
-)
-textlab.grid(column=2, row=0, rowspan=7)
-root.title("Übung 4 MT1")
 if __name__ == "__main__":
-    root.mainloop()
-    plt.close("all")
+    app = LTIApp()
+    app.run()

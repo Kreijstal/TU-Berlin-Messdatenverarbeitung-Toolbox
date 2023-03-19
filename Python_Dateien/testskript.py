@@ -6,7 +6,7 @@ i = 0
 
 def test1():
     onesecond = 10000
-    import Ubung_01 as ue1
+    import Uebung_01 as ue1
 
     gui = ue1.GUI()
 
@@ -29,10 +29,10 @@ def test1():
 
 def test2():
     onesecond = 3000
-    import Ubung_01
+    import Uebung_01
 
     i = 0
-    import Übung_02 as ue2
+    import Uebung_02 as ue2
 
     app = ue2.RegressionApp()
 
@@ -76,7 +76,7 @@ def test2():
 
 def test3():
     onesecond = 30
-    import Übung_03 as ue3
+    import Uebung_03 as ue3
 
     ue3TKClass = ue3.TKWindow("Ubung 3 Wird jetzt getestet!")
 
@@ -147,21 +147,23 @@ def test3():
 
 def test4():
     onesecond = 5
-    import Ubung_04 as ue4
+    import Uebung_04 as ue4
+
+    app = ue4.LTIApp()
 
     def wait(ii):
         i = 0
         while i < onesecond * ii:
             i = i + 1
-            ue4.root.dooneevent(ue4.Tk._tkinter.ALL_EVENTS | ue4.Tk._tkinter.DONT_WAIT)
+            app.root.dooneevent(ue4.Tk._tkinter.ALL_EVENTS | ue4.Tk._tkinter.DONT_WAIT)
 
     def slider2test():
         a = 0
         b = 100
         i2 = a
         while i2 <= b:
-            ue4.scale2.set(i2)
-            ue4.onfrequenzChange(i2)
+            app.scale2.set(i2)
+            app.on_frequenz_change(i2)
             i2 += (b - a) / 10
             wait(1)
 
@@ -171,18 +173,18 @@ def test4():
         i3 = a
         while i3 <= b:
             slider2test()
-            ue4.scale.set(i3)
-            ue4.onZetaChange(i3)
+            app.scale.set(i3)
+            app.on_zeta_change(i3)
             i3 += (b - a) / 10
             wait(1)
 
     slider1test()
     wait(1)
-    ue4.root.destroy()
+    app.root.destroy()
 
 
 def test5():
-    import Ubung_05 as ue5
+    import Uebung_05 as ue5
 
     onesecond = 30000
 
@@ -209,7 +211,7 @@ def test5():
 
 
 def test6():
-    import Übung_06 as ue6
+    import Uebung_06 as ue6
 
     onesecond = 100
 
@@ -233,7 +235,7 @@ def test6():
 
 
 def test7():
-    import Übung_07 as ue7
+    import Uebung_07 as ue7
 
     onesecond = 20
 
@@ -262,9 +264,9 @@ def test7():
 
 
 # test1()
-test2()
+#test2()
 # test3()
-# test4()
+test4()
 # test5()
 # test6()
 # test7()
