@@ -19,24 +19,25 @@ def test1():
     gui.freiheitgradVonStudenTverteilung.set(50)
     wait(1)
     gui.root.destroy()
-test1()
+
 def test2():
     onesecond=3000
     import Ubung_01
     i=0
     import Übung_02 as ue2
+    app=ue2.RegressionApp()
     def show(ii):
-        ue2.plotAktualizieren()
-        ue2.res()
+        app.plotAktualizieren()
+        app.res()
         i=0
         while i<onesecond*ii:
             i=i+1
-            ue2.root.dooneevent(ue2.tk._tkinter.ALL_EVENTS|ue2.tk._tkinter.DONT_WAIT)
+            app.root.dooneevent(ue2.tk._tkinter.ALL_EVENTS|ue2.tk._tkinter.DONT_WAIT)
     while i<onesecond*2:
         i=i+1
-        ue2.root.update_idletasks()
-        ue2.root.update()
-    ue2.dropDownVariable.set(ue2.liste_reg_and_interp[0])
+        app.root.update_idletasks()
+        app.root.update()
+    app.dropDownVariable.set(app.liste_reg_and_interp[0])
     #ue2.text3.set("30")
     #ue2.number_array[10].insert(ue2.tk.END,"0")
     
@@ -44,22 +45,22 @@ def test2():
     x=np.array([0, 20, 40, 60, 80])
     y=np.array([1.7, 1.1, 0.75, 0.5, 0.4])
     def insert(i,x):
-        ue2.number_array[i].delete(0, 'end')
-        ue2.number_array[i].insert(ue2.tk.END,str(x))
+        app.number_entries[i].delete(0, 'end')
+        app.number_entries[i].insert(ue2.tk.END,str(x))
 
     [insert(i,x) for i,x in enumerate(list(np.concatenate([x,y])))]
     show(4)
-    ue2.dropDownVariable.set(ue2.liste_reg_and_interp[1])
-    ue2.drop_down_change(ue2.liste_reg_and_interp[1])
+    app.dropDownVariable.set(app.liste_reg_and_interp[1])
+    app.drop_down_change(app.liste_reg_and_interp[1])
     show(4)
-    ue2.dropDownVariable.set(ue2.liste_reg_and_interp[2])
-    ue2.drop_down_change(ue2.liste_reg_and_interp[2])
-    ue2.plotAktualizieren()
+    app.dropDownVariable.set(app.liste_reg_and_interp[2])
+    app.drop_down_change(app.liste_reg_and_interp[2])
+    app.plotAktualizieren()
     show(4)
     print("Ubung 2 läuft")
-    ue2.root.destroy()
+    app.root.destroy()
     #ue2.button.
-test2()
+
 def test3():
     onesecond=30
     import Übung_03 as ue3
@@ -118,7 +119,7 @@ def test3():
     button3test()
     wait(2)
     ue3TKClass.destroy()
-test3()
+
 def test4():
     onesecond=5
     import Ubung_04 as ue4
@@ -152,7 +153,7 @@ def test4():
     wait(1)
     ue4.root.destroy()
 
-test4()
+
 def test5():
     import Ubung_05 as ue5
     onesecond=30000
@@ -174,7 +175,7 @@ def test5():
     wait(1)
     ue5TKClass.destroy()
 
-test5()
+
 def test6():
     import Übung_06 as ue6
     onesecond=100
@@ -194,7 +195,7 @@ def test6():
     ue6TKClass.create_axes(4)
     wait(1)
     ue6TKClass.destroy()
-test6()
+
 def test7():
     import Übung_07 as ue7
     onesecond=20
@@ -219,8 +220,13 @@ def test7():
     ue7TKClass.widgets["entry_z4"]["self"].delete(0,ue7.tk.END)
     ue7TKClass.widgets["entry_z4"]["self"].insert(ue7.tk.END,"-3")
     wait(1)
- 
-test7()
+#test1()
+test2()
+#test3()
+#test4()
+#test5()
+#test6()
+#test7()
 
 
 #mingw -c "./venv/bin/python Python_Dateien/testskript.py"
