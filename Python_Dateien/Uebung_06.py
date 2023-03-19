@@ -109,7 +109,7 @@ class TKWindow(tk.Tk):
     """Das hier zeigt in tkinter ein Plot von Spannung und Strom"""
 
     dictWidgets = dict()
-    amplitude = 0
+    Amplitude = 0
     frequency = 0
     spannung = []
     ueff = []
@@ -172,7 +172,7 @@ class TKWindow(tk.Tk):
 
     def animate(self, i):
         # self.frequency=self.dictWidgets["frequency"].get()
-        self.amplitude = self.dictWidgets["amplitude"].get()
+        self.Amplitude = self.dictWidgets["Amplitude"].get()
         show = self.showeff.get()
         symmetrisch = self.sym.get()
         for ax in self.axes:
@@ -181,7 +181,7 @@ class TKWindow(tk.Tk):
         if "someFunction" in self.dictWidgets:
             ax = self.axes[0]
             t = np.linspace(i - self.tx + self.tx / 10, i, 10)
-            u = self.dictWidgets["someFunction"](self.amplitude, self.frequency, t)
+            u = self.dictWidgets["someFunction"](self.Amplitude, self.frequency, t)
             leg = self.showlegend.get()
             for (Z, V) in zip(t, u):
                 self.intU = self.intU + V * self.tx / 10
@@ -290,7 +290,7 @@ class TKWindow(tk.Tk):
         try:
             impedanz = eval(
                 "lambda u,t,du,U,f,a:" + self.dictWidgets["Impedanz"].get()
-            )(u, time, du, U, self.frequency, self.amplitude)
+            )(u, time, du, U, self.frequency, self.Amplitude)
             assert impedanz != 0 and float("-inf") < float(impedanz) < float("inf")
             self.impedanz = float(impedanz)
             self.dictWidgets["Impedanz"].config(bg="white")
@@ -313,15 +313,15 @@ class TKWindow(tk.Tk):
             this.dictWidgets["someFunction"] = sine
             this.dictWidgets["tastGrad"].grid_remove()
 
-        def sine(amplitude, frequency, time):
-            return amplitude * np.sin(time * 2 * np.pi * frequency + self.phi)
+        def sine(Amplitude, frequency, time):
+            return Amplitude * np.sin(time * 2 * np.pi * frequency + self.phi)
 
         def attachRechteck():
             this.dictWidgets["someFunction"] = rechteck
             this.dictWidgets["tastGrad"].grid(column=5, row=0, sticky="ns", rowspan=4)
 
-        def rechteck(amplitude, frequency, time):
-            return amplitude * scipy.signal.square(
+        def rechteck(Amplitude, frequency, time):
+            return Amplitude * scipy.signal.square(
                 time * 2 * np.pi * frequency + self.phi,
                 duty=this.dictWidgets["tastGrad"].get(),
             )
@@ -330,8 +330,8 @@ class TKWindow(tk.Tk):
             this.dictWidgets["tastGrad"].grid(column=5, row=0, sticky="ns", rowspan=4)
             this.dictWidgets["someFunction"] = sawtooth
 
-        def sawtooth(amplitude, frequency, time):
-            return amplitude * scipy.signal.sawtooth(
+        def sawtooth(Amplitude, frequency, time):
+            return Amplitude * scipy.signal.sawtooth(
                 time * 2 * np.pi * frequency + self.phi,
                 width=this.dictWidgets["tastGrad"].get(),
             )
@@ -340,10 +340,10 @@ class TKWindow(tk.Tk):
         case_2 = attachRechteck
         case_3 = attachsawtooth
         case_4 = lambda: print("load swa")
-        switch.add_case("sinus", case_1, True)
-        switch.add_case("rechteck", case_2, True)
-        switch.add_case("sawtooth", case_3, True)
-        switch.add_case("rechteck", case_3, True)
+        switch.add_case("Sinus", case_1, True)
+        switch.add_case("Rechteck", case_2, True)
+        switch.add_case("Sawtooth", case_3, True)
+        switch.add_case("Rechteck", case_3, True)
         switch.case(a)
 
     def change_frequency(self, freq):
@@ -380,9 +380,9 @@ class TKWindow(tk.Tk):
             column=1, row=1, sticky="ew", ipadx=120
         )
         self.createDropdown(
-            "dropdown", ["sinus", "sawtooth", "rechteck"], self.onSelection
+            "dropdown", ["Sinus", "Sawtooth", "Rechteck"], self.onSelection
         ).grid(column=3, row=1, columnspan=2, sticky="ew", ipadx=120)
-        self.createSlider("amplitude", 0, 100).grid(
+        self.createSlider("Amplitude", 0, 100).grid(
             column=1, row=2, sticky="ew", ipadx=120
         )
         tk.Label(self, text="Z =").grid(column=3, row=2, sticky="w")

@@ -143,7 +143,7 @@ class Animator:
                 if legen:
                     legen.remove()
             self.ax2.cla()
-            self.ax2.set_title("Student T Verteilung")
+            self.ax2.set_title("Student-t Verteilung")
             self.ax2.set_ylabel("Häufigkeit")
             self.ax2.set_xlabel("Zufallwerte")
             datemsatz2 = (
@@ -172,7 +172,7 @@ class GUI:
         root (Tkinter.Tk): The main Tkinter window for the GUI
         anzahlVonBins (Tkinter.Scale): A scale widget to adjust the number of bins in the histograms
         anzahlSamples (Tkinter.Scale): A scale widget to adjust the number of samples in the histograms
-        freiheitgradVonStudenTverteilung (Tkinter.Scale): A scale widget to adjust the degrees of freedom in the Student T distribution
+        freiheitgradVonStudenTverteilung (Tkinter.Scale): A scale widget to adjust the degrees of freedom in the Student-t distribution
         legend (Tkinter.BooleanVar): A boolean variable to control whether the legend is shown on the plot
         var1 (Tkinter.IntVar): An integer variable to control whether the samples are refreshed every frame
         var2 (Tkinter.IntVar): An integer variable to control whether the data is frozen or generated randomly
@@ -184,7 +184,7 @@ class GUI:
         ani (matplotlib.animation.FuncAnimation): An animation object to animate the plot
 
     Methods:
-        generate_Datensatz(self): Generates random data for the normal and Student T distributions, and enables/disables the Student T scale widget
+        generate_Datensatz(self): Generates random data for the normal and Student-t distributions, and enables/disables the Student-t scale widget
         do_popup(self, menu): Shows a popup menu when the user right-clicks on the canvas
         run(self): Runs the Tkinter mainloop
     """
@@ -220,23 +220,23 @@ class GUI:
         Tk.Label(self.root, text="Es ist möglich mit den Sliders zu Spielen").grid(
             column=0, row=1
         )
-        Tk.Label(self.root, text="#bins").grid(column=2, row=0)
-        Tk.Label(self.root, text="#samples").grid(column=2, row=2)
-        Tk.Label(self.root, text="Freiheitsgrad von student T").grid(column=2, row=4)
+        Tk.Label(self.root, text="#Bins").grid(column=2, row=0)
+        Tk.Label(self.root, text="#Samples").grid(column=2, row=2)
+        Tk.Label(self.root, text="Freiheitsgrad von Student-t").grid(column=2, row=4)
 
         # Create and place the freeze and refresh checkboxes
         self.var1 = Tk.IntVar()
         self.var2 = Tk.IntVar()
         self.IstRefreshSamplesGecheckht = Tk.Checkbutton(
             self.root,
-            text="refresh samples/frame",
+            text="Samples/Frame aktualisieren",
             variable=self.var1,
             onvalue=1,
             offvalue=0,
         )
         self.istGefroren = Tk.Checkbutton(
             self.root,
-            text="Freeze datensatz",
+            text="Datensatz fest machen",
             variable=self.var2,
             onvalue=1,
             offvalue=0,

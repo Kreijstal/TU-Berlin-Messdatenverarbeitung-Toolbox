@@ -16,6 +16,15 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from scipy import interpolate as ip
 
+screenpam=1
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "p", ["presentation"])
+except getopt.GetoptError:
+    print("Invalid param")
+    sys.exit(2)
+for opt, arg in opts:
+    if opt == "-p":
+        screenpam=2
 
 def sortinputandoutput(x, y):
     """Sortiert die input und output damit wir linear interpolieren können
@@ -99,9 +108,9 @@ def findValue(x, x0, y):
 
 class RegressionApp:
     def __init__(self):
-        self.WINDOW_WIDTH = 800
-        self.WINDOW_HEIGHT = 600
-        self.FONT = ("Times New Roman", 9)
+        self.WINDOW_WIDTH = 800*screenpam
+        self.WINDOW_HEIGHT = 600*screenpam
+        self.FONT = ("Times New Roman", 9*screenpam)
         self.liste_reg_and_interp = [
             "Methode der kleinsten Quadrate",
             "Lineare Interpolation",
@@ -274,7 +283,7 @@ class RegressionApp:
         This method sets up the plot, labels, input fields, and buttons for the application.
         It also configures the appearance and layout of the various widgets.
         """
-        self.plt_figure = plt.Figure(figsize=(6, 4), dpi=100)
+        self.plt_figure = plt.Figure(figsize=(6*2, 4*2), dpi=100)
         self.plot1 = self.plt_figure.add_subplot(111)
         self.tk_canvas = FigureCanvasTkAgg(self.plt_figure, self.root)
         self.tk_canvas.get_tk_widget().grid(

@@ -13,15 +13,23 @@ import numpy as np
 import matplotlib.animation as animation
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+import sys, getopt
 window_title = "Übung 03 - Statische Eigenschaften von Messystemen"
-
+screenpam=1
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "p", ["presentation"])
+except getopt.GetoptError:
+    print("Invalid param")
+    sys.exit(2)
+for opt, arg in opts:
+    if opt == "-p":
+        screenpam=2
 
 class TKWindow(tk.Tk):
     """Class to generate TKinter Window"""
 
     figure_params = {
-        "figsize": (8, 5),
+        "figsize": (8*screenpam, 5*screenpam),
         "title": "Kennlinien Fehler",
         "xlabel": "Output",
         "ylabel": "Input",
@@ -105,6 +113,10 @@ class TKWindow(tk.Tk):
             title (str, optional): Setzt den Titel des Fensters. Defaults to "Test Window".
         """
         super().__init__()
+        self.offsetold=None
+        self.ampold=None
+        self.wimp=None
+        self.changed=True
         self.init_window(title)
         self.init_params()
         self.create_widgets()
@@ -115,7 +127,7 @@ class TKWindow(tk.Tk):
         self.animation_object = animation.FuncAnimation(
             self.figure, self.animate, interval=100
         )
-
+        
     def init_window(self, title):
         """Set´s parameters for the window.
 
@@ -203,8 +215,16 @@ class TKWindow(tk.Tk):
         Args:
             scale (dict): Scale whose value has to be set to zero
         """
+        self.changed=True
         scale.set(0)
-
+    def set_old(self):
+        self.offsetold=self.widget_params["offset_scale"]["variable"].get()
+        self.ampold=self.widget_params["amplification_scale"]["variable"].get()
+        self.wimp=self.widget_params["linearity_scale"]["variable"].get()
+        
+    def check_old(self):
+        return self.offsetold==self.widget_params["offset_scale"]["variable"].get() and self.ampold==self.widget_params["amplification_scale"]["variable"].get() and self.wimp==self.widget_params["linearity_scale"]["variable"].get()
+        
     def init_widgets(self):
         """Initialize widget variables after widget creation."""
         [self.checkboxes[checkbox].select() for checkbox in self.checkboxes]
@@ -245,6 +265,9 @@ class TKWindow(tk.Tk):
         Args:
             i (int): needed for animation
         """
+        if not self.changed and self.check_old():
+           return
+        
         self.update_graphs()
         self.axes.clear()
         self.axes.set_title(self.figure_params["title"])
@@ -267,6 +290,8 @@ class TKWindow(tk.Tk):
             "linearity_checkbox"
         ]["variable"].get() else None
         self.axes.legend(loc=self.figure_params["legend_position"])
+        self.set_old()
+        self.changed=False
 
     def update_graphs(self):
         """Update graph values."""

@@ -263,13 +263,13 @@ def test7():
     wait(1)
 
 
-# test1()
-#test2()
-# test3()
+test1()
+test2()
+test3()
 test4()
-# test5()
-# test6()
-# test7()
+test5()
+test6()
+test7()
 
 
 # mingw -c "./venv/bin/python Python_Dateien/testskript.py"
