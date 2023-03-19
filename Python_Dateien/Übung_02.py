@@ -7,7 +7,7 @@ Interpolation geplottet und die geschätzten Werte für eine unbekannte Größe 
 
 Beispielweise würde hier der Wiederstand in abhängigkeit er Temperatur approximiert und ausgerechnet 
 
-@author: Datenschutz bitte.
+@author: Boris
 """
 import tkinter as tk
 import numpy as np

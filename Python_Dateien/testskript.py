@@ -4,20 +4,21 @@ i=0
 def test1():
     onesecond=10000
     import Ubung_01 as ue1
+    gui=ue1.GUI()
     def wait(ii):
         i=0
         while i<onesecond*ii:
             i=i+1
-            ue1.root.dooneevent(ue1.Tk._tkinter.ALL_EVENTS|ue1.Tk._tkinter.DONT_WAIT)
+            gui.root.dooneevent(ue1.Tk._tkinter.ALL_EVENTS|ue1.Tk._tkinter.DONT_WAIT)
     wait(1)
-    ue1.var1.set(1)
+    gui.var1.set(1)
     wait(1)
-    ue1.anzahlVonBins.set(30)
-    ue1.anzahlSamples.set(6000)
+    gui.anzahlVonBins.set(30)
+    gui.anzahlSamples.set(6000)
     wait(1)
-    ue1.freiheitgradVonStudenTverteilung.set(50)
+    gui.freiheitgradVonStudenTverteilung.set(50)
     wait(1)
-    ue1.root.destroy()
+    gui.root.destroy()
 test1()
 def test2():
     onesecond=3000
