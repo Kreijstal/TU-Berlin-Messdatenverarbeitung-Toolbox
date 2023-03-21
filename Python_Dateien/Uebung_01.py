@@ -37,25 +37,25 @@ class Data:
 
 class Animator:
     """
-    A class for animating histograms of random data.
+    Eine Klasse zum Animieren von Histogrammen mit Zufallsdaten.
 
-    Args:
-        anzahlVonBins: A tkinter Scale widget representing the number of bins in the histogram.
-        anzahlSamples: A tkinter Scale widget representing the number of samples in the data.
-        freiheitgradVonStudenTverteilung: A tkinter Scale widget representing the degrees of freedom for the Student's t-distribution.
-        legend: A tkinter BooleanVar representing whether to show the legend on the plot.
-        var1: A tkinter IntVar representing whether to refresh the data on each frame.
-        var2: A tkinter IntVar representing whether to freeze the data.
-        data: A Data object containing the random data.
-
-    Methods:
-        animate(i): Animates a frame of the histogram.
-
-        Args:
-            i (int): An integer representing the frame number. Ignored.
-
-        Returns:
-            A histogram generated from the random data.
+    Argumente:
+        anzahlVonBins: Ein tkinter Scale-Widget, das die Anzahl der Bins im Histogramm darstellt.
+        anzahlSamples: Ein tkinter Scale-Widget, das die Anzahl der Stichproben in den Daten darstellt.
+        freiheitsgradVonStudenTverteilung: Ein tkinter Scale-Widget, das die Freiheitsgrade der Student's t-Verteilung darstellt.
+        legende: Eine tkinter BooleanVar, die angibt, ob die Legende im Diagramm angezeigt werden soll.
+        var1: Eine tkinter IntVar, die angibt, ob die Daten bei jedem Frame erneuert werden sollen.
+        var2: Eine tkinter IntVar, die angibt, ob die Daten eingefroren werden sollen.
+        daten: Ein Datenobjekt, das die Zufallsdaten enthält.
+    
+    Methoden:
+        animieren(i): Animiert ein Frame des Histogramms.
+    
+        Argumente:
+            i (int): Eine Ganzzahl, die die Frame-Nummer darstellt. Wird ignoriert.
+    
+        Rückgabewert:
+            Ein Histogramm, das aus den Zufallsdaten generiert wurde.
     """
 
     def __init__(
@@ -69,16 +69,16 @@ class Animator:
         data,
     ):
         """
-        Initializes an Animator object with the given attributes.
+        Initialisiert ein Animator-Objekt mit den gegebenen Attributen.
 
-        Args:
-            anzahlVonBins: A tkinter Scale widget representing the number of bins in the histogram.
-            anzahlSamples: A tkinter Scale widget representing the number of samples in the data.
-            freiheitgradVonStudenTverteilung: A tkinter Scale widget representing the degrees of freedom for the Student's t-distribution.
-            legend: A tkinter BooleanVar representing whether to show the legend on the plot.
-            var1: A tkinter IntVar representing whether to refresh the data on each frame.
-            var2: A tkinter IntVar representing whether to freeze the data.
-            data: A Data object containing the random data.
+        Argumente:
+            anzahlVonBins: Ein tkinter-Scale-Widget, das die Anzahl der Bins im Histogramm repräsentiert.
+            anzahlSamples: Ein tkinter-Scale-Widget, das die Anzahl der Stichproben in den Daten repräsentiert.
+            freiheitgradVonStudenTverteilung: Ein tkinter-Scale-Widget, das die Freiheitsgrade der Student'schen t-Verteilung repräsentiert.
+            legende: Eine tkinter BooleanVar, die angibt, ob die Legende im Diagramm angezeigt werden soll.
+            var1: Eine tkinter IntVar, die angibt, ob die Daten bei jedem Frame aktualisiert werden sollen.
+            var2: Eine tkinter IntVar, die angibt, ob die Daten eingefroren werden sollen.
+            daten: Ein Data-Objekt, das die Zufallsdaten enthält.
         """
         self.fig = plt.Figure(figsize=(8, 8))
         self.ax = self.fig.add_subplot(2, 1, 1)
@@ -96,13 +96,13 @@ class Animator:
 
     def animate(self, i):
         """
-        Animates a frame of the histogram.
-
+        Animiert eine Einzelbild des Histogramms.
+        
         Args:
-            i (int): An integer representing the frame number. Ignored.
-
+            i (int): Eine Ganzzahl, die die Rahmennummer darstellt. Wird ignoriert.
+        
         Returns:
-            A histogram generated from the random data.
+            Ein Histogramm, das aus den Zufallsdaten generiert wurde
         """
         newscale1 = self.anzahlVonBins.get()
         newscale2 = self.anzahlSamples.get()
@@ -117,7 +117,7 @@ class Animator:
             pass
         else:
             self.ax.cla()
-            self.ax.set_title("Normal Verteilung")
+            self.ax.set_title("Normalverteilung")
             datemsatz1 = (
                 np.random.normal(size=newscale2)
                 if self.var2.get() == 0
@@ -161,43 +161,43 @@ class Animator:
 
 class GUI:
     """
-    This class defines the Graphical User Interface (GUI) for the application. It allows the user to manipulate different
-    parameters and settings, and view the resulting plots.
+    Diese Klasse definiert die grafische Benutzeroberfläche (GUI) für die Anwendung. Sie ermöglicht es dem Benutzer, verschiedene
+    Parameter und Einstellungen zu manipulieren und die resultierenden Diagramme anzusehen.
 
-    Args:
-        None
+    Argumente:
+        Keine
 
-    Attributes:
-        data (Data): An instance of the Data class to hold generated random data
-        root (Tkinter.Tk): The main Tkinter window for the GUI
-        anzahlVonBins (Tkinter.Scale): A scale widget to adjust the number of bins in the histograms
-        anzahlSamples (Tkinter.Scale): A scale widget to adjust the number of samples in the histograms
-        freiheitgradVonStudenTverteilung (Tkinter.Scale): A scale widget to adjust the degrees of freedom in the Student-t distribution
-        legend (Tkinter.BooleanVar): A boolean variable to control whether the legend is shown on the plot
-        var1 (Tkinter.IntVar): An integer variable to control whether the samples are refreshed every frame
-        var2 (Tkinter.IntVar): An integer variable to control whether the data is frozen or generated randomly
-        IstRefreshSamplesGecheckht (Tkinter.Checkbutton): A checkbox to control whether the samples are refreshed every frame
-        istGefroren (Tkinter.Checkbutton): A checkbox to control whether the data is frozen or generated randomly
-        men (Tkinter.Menu): A popup menu to show when the user right-clicks on the plot
-        animator (Animator): An instance of the Animator class to handle the animation of the plot
-        canvas (matplotlib.backends.backend_tkagg.FigureCanvasTkAgg): A canvas to display the plot in the GUI
-        ani (matplotlib.animation.FuncAnimation): An animation object to animate the plot
+    Attribute:
+        data (Data): Eine Instanz der Data-Klasse, die generierte Zufallsdaten enthält
+        root (Tkinter.Tk): Das Hauptfenster von Tkinter für die GUI
+        anzahlVonBins (Tkinter.Scale): Ein Schieberegler zur Anpassung der Anzahl der Bins in den Histogrammen
+        anzahlSamples (Tkinter.Scale): Ein Schieberegler zur Anpassung der Anzahl der Stichproben in den Histogrammen
+        freiheitgradVonStudenTverteilung (Tkinter.Scale): Ein Schieberegler zur Anpassung der Freiheitsgrade in der Student-t-Verteilung
+        legende (Tkinter.BooleanVar): Eine boolesche Variable zur Steuerung der Anzeige der Legende im Diagramm
+        var1 (Tkinter.IntVar): Eine Ganzzahlvariable zur Steuerung, ob die Stichproben bei jedem Frame erneuert werden
+        var2 (Tkinter.IntVar): Eine Ganzzahlvariable zur Steuerung, ob die Daten eingefroren oder zufällig generiert werden
+        IstRefreshSamplesGecheckht (Tkinter.Checkbutton): Eine Checkbox zur Steuerung, ob die Stichproben bei jedem Frame erneuert werden
+        istGefroren (Tkinter.Checkbutton): Eine Checkbox zur Steuerung, ob die Daten eingefroren oder zufällig generiert werden
+        men (Tkinter.Menu): Ein Popup-Menü, das angezeigt wird, wenn der Benutzer mit der rechten Maustaste auf das Diagramm klickt
+        animator (Animator): Eine Instanz der Animator-Klasse zur Steuerung der Animation des Diagramms
+        canvas (matplotlib.backends.backend_tkagg.FigureCanvasTkAgg): Eine Leinwand zur Anzeige des Diagramms in der GUI
+        ani (matplotlib.animation.FuncAnimation): Ein Animationsobjekt zur Animation des Diagramms
 
-    Methods:
-        generate_Datensatz(self): Generates random data for the normal and Student-t distributions, and enables/disables the Student-t scale widget
-        do_popup(self, menu): Shows a popup menu when the user right-clicks on the canvas
-        run(self): Runs the Tkinter mainloop
+    Methoden:
+        generate_Datensatz(self): Generiert Zufallsdaten für die Normal- und Student-t-Verteilungen und aktiviert/deaktiviert das Student-t-Schieberegler-Widget
+        do_popup(self, menu): Zeigt ein Popup-Menü an, wenn der Benutzer mit der rechten Maustaste auf die Leinwand klickt
+        run(self): Startet die Tkinter-Hauptschleife
     """
 
     def __init__(self):
         """
-        Initializes the GUI and creates all the necessary widgets and objects
+        Initialisiert die GUI und erstellt alle notwendigen Widgets und Objekte
 
-        Args:
-            None
+        Argumente:
+            Keine
 
-        Returns:
-            None
+        Rückgabewerte:
+            Keine
         """
 
         self.data = Data()

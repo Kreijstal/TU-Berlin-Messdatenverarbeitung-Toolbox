@@ -15,7 +15,7 @@ import random
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from scipy import interpolate as ip
-
+import sys, getopt
 screenpam=1
 try:
     opts, args = getopt.getopt(sys.argv[1:], "p", ["presentation"])
@@ -283,7 +283,7 @@ class RegressionApp:
         This method sets up the plot, labels, input fields, and buttons for the application.
         It also configures the appearance and layout of the various widgets.
         """
-        self.plt_figure = plt.Figure(figsize=(6*2, 4*2), dpi=100)
+        self.plt_figure = plt.Figure(figsize=(6*screenpam, 4*screenpam), dpi=100)
         self.plot1 = self.plt_figure.add_subplot(111)
         self.tk_canvas = FigureCanvasTkAgg(self.plt_figure, self.root)
         self.tk_canvas.get_tk_widget().grid(
@@ -329,8 +329,8 @@ class RegressionApp:
         )
 
         # Set up input value labels
-        create_label(self.root, "Input values 1 (x)", 0, 0)
-        create_label(self.root, "Input values 2 (y)", 6, 0)
+        create_label(self.root, "Eingabewerte (x)", 0, 0)
+        create_label(self.root, "Eingabewerte 2 (y)", 6, 0)
         # Set up input entry fields
         for i in range(5):
             num = tk.Entry(self.root, justify="center")
@@ -347,12 +347,12 @@ class RegressionApp:
         # Set up calculate buttons
         create_button(
             self.root,
-            text="Calculate",
+            text="Diagramm zeichnen",
             command=lambda: [self.plotAktualizieren()],
             row=12,
             column=0,
         )
-        create_button(self.root, text="Calculate 2", command=self.res, row=15, column=0)
+        create_button(self.root, text="Das y Wert berechnen", command=self.res, row=15, column=0)
 
         create_label(self.root, "Unbekannte Größe", 13, 0)
 

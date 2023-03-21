@@ -226,9 +226,9 @@ def test6():
 
     ue6TKClass = ue6.TKWindow("Ubung 6 Wird jetzt getestet!")
     ue6TKClass.dictWidgets["frequency"].set(137)
-    ue6TKClass.dictWidgets["amplitude"].set(13)
+    ue6TKClass.dictWidgets["Amplitude"].set(13)
     # ue6TKClass.dictWidgets["dropdown"].set("sinus")
-    ue6TKClass.onSelection("sinus")
+    ue6TKClass.onSelection("Sinus")
     ue6TKClass.create_axes(4)
     wait(1)
     ue6TKClass.destroy()

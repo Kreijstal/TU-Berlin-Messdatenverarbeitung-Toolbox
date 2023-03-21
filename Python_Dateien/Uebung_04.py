@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 
 # import svg.path
 import control.matlab
-import yaml
+#import yaml
 
 
 try:
@@ -40,6 +40,30 @@ Und die Polen sind an der Stellen
         latex_eq.as_svg().as_drawing().rasterize().savePng("eq1.png")
 # https://www.desmos.com/calculator/jp1ejacymw
 
+step_info_translation = {
+    'RiseTime': 'Anstiegszeit',
+    'SettlingTime': 'Einschwingzeit',
+    'SettlingMin': 'Einschwingminimum',
+    'SettlingMax': 'Einschwingmaximum',
+    'Overshoot': 'Überschwingen',
+    'Undershoot': 'Unterschwingen',
+    'Peak': 'Spitzenwert',
+    'PeakTime': 'Spitzenzeit',
+    'SteadyStateValue': 'Stationärer Endwert'
+}
+
+def format_step_info_german(step_info):
+    formatted_text = ""
+    for key, value in step_info.items():
+        if key in step_info_translation:
+            german_key = step_info_translation[key]
+            formatted_text += f"{german_key}: {value:.2f}"
+            if key not in ['Undershoot', 'SteadyStateValue']:
+                formatted_text += " %" if key == 'Overshoot' else " s"
+            formatted_text += "\n"
+    return formatted_text
+
+    
 class LTIApp:
     def __init__(self):
         self.root = Tk.Tk()
@@ -61,7 +85,7 @@ class LTIApp:
 
     def create_labels(self):
         Tk.Label(self.root, text="2te Ordnung LTI").grid(column=0, row=0)
-        Tk.Label(self.root, text="zeta").grid(column=1, row=0)
+        Tk.Label(self.root, text="Zeta").grid(column=1, row=0)
         Tk.Label(self.root, text="Eigenfrequenz").grid(column=1, row=2)
 
     def create_image(self):
@@ -126,9 +150,17 @@ class LTIApp:
         self.scale2.grid(column=1, row=3, sticky="ew")
 
     def create_step_info(self):
+        try:
+            step_info = control.matlab.stepinfo(self.sys)
+            #step_info_german = {step_info_translation[k]: float(v) for k, v in step_info.items()}
+            #step_info_text = yaml.dump(step_info_german)
+            step_info_text = format_step_info_german(step_info)
+        except IndexError:
+            step_info_text = "Fehler bei der Berechnung der Schrittinformationen."
+        
         self.textlab = Tk.Label(
             self.root,
-            text=yaml.dump({k: float(v) for k, v in control.matlab.stepinfo(self.sys).items()})
+            text=step_info_text
         )
         self.textlab.grid(column=2, row=0, rowspan=7)
 
@@ -163,9 +195,10 @@ class LTIApp:
 
         try:
             step_info = control.matlab.stepinfo(self.sys)
-            step_info_text = yaml.dump({k: float(v) for k, v in step_info.items()})
+            #step_info_german = {step_info_translation[k]: float(v) for k, v in step_info.items()}
+            step_info_text = format_step_info_german(step_info)
         except IndexError:
-            step_info_text = "Error calculating step info."
+            step_info_text = "Fehler bei der Berechnung der Schrittinformationen."
 
         self.textlab.config(text=step_info_text)
 
