@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from scipy import interpolate as ip
 import sys, getopt
+import matplotlib.style as style
 screenpam=1
 try:
     opts, args = getopt.getopt(sys.argv[1:], "p", ["presentation"])
@@ -118,6 +119,10 @@ class RegressionApp:
         ]
         self.N = 5
         self.root = tk.Tk()
+        self.root.config(bg="black")
+        style.use('dark_background')
+        self.root.tk_setPalette(background='black', foreground='white',
+               activeBackground='#101000', activeForeground="gray2")
         self.initialize_gui()
         self.x = []
         self.y = []
@@ -158,7 +163,7 @@ class RegressionApp:
         x, y = self.x, self.y
         try:
             xvltemp = float(self.number_entries[10].get())
-            self.number_entries[10].config(bg="white")
+            self.number_entries[10].config(bg="black")
         except Exception as e:
             self.number_entries[10].config(bg="red")
             return
@@ -254,7 +259,7 @@ class RegressionApp:
         for i in range(10):
             try:
                 values.append(float(self.number_entries[i].get()))
-                self.number_entries[i].config(bg="white")
+                self.number_entries[i].config(bg="black")
             except Exception as e:
                 self.number_entries[i].config(bg="red")
                 return

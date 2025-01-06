@@ -16,6 +16,8 @@ import tkinter as Tk
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import matplotlib.style as style
+
 
 
 class Data:
@@ -204,25 +206,29 @@ class GUI:
 
         # Create the main Tkinter window
         self.root = Tk.Tk()
+        self.root.config(bg="black")
+        style.use('dark_background')
+        self.root.tk_setPalette(background='#40E0D0', foreground='black',
+               activeBackground='black', activeForeground="white")
 
         # Create and place the scale widgets
         self.anzahlVonBins = Tk.Scale(
-            self.root, orient=Tk.HORIZONTAL, length=300, from_=2, to=100
+            self.root, orient=Tk.HORIZONTAL, length=300, from_=2, to=100, bg="black",foreground="white",troughcolor='#13052A',highlightthickness=0
         )
         self.anzahlSamples = Tk.Scale(
-            self.root, orient=Tk.HORIZONTAL, length=300, from_=2, to=10000
+            self.root, orient=Tk.HORIZONTAL, length=300, from_=2, to=10000, bg="black",foreground="white",troughcolor='#13052A',highlightthickness=0
         )
         self.anzahlVonBins.grid(column=2, row=1)
         self.anzahlSamples.grid(column=2, row=3)
 
         # Create and place labels
-        Tk.Label(self.root, text="Normal und Student Verteilung").grid(column=0, row=0)
-        Tk.Label(self.root, text="Es ist möglich mit den Sliders zu Spielen").grid(
+        Tk.Label(self.root, text="Normal und Student Verteilung", bg="black",foreground="white").grid(column=0, row=0)
+        Tk.Label(self.root, text="Es ist möglich mit den Sliders zu Spielen", bg="black",foreground="white").grid(
             column=0, row=1
         )
-        Tk.Label(self.root, text="#Bins").grid(column=2, row=0)
-        Tk.Label(self.root, text="#Samples").grid(column=2, row=2)
-        Tk.Label(self.root, text="Freiheitsgrad von Student-t").grid(column=2, row=4)
+        Tk.Label(self.root, text="#Bins", bg="black",foreground="white").grid(column=2, row=0)
+        Tk.Label(self.root, text="#Samples", bg="black",foreground="white").grid(column=2, row=2)
+        Tk.Label(self.root, text="Freiheitsgrad von Student-t", bg="black",foreground="white").grid(column=2, row=4)
 
         # Create and place the freeze and refresh checkboxes
         self.var1 = Tk.IntVar()
@@ -232,7 +238,8 @@ class GUI:
             text="Samples/Frame aktualisieren",
             variable=self.var1,
             onvalue=1,
-            offvalue=0,
+            offvalue=0
+            , bg="black",foreground="white", activebackground='black', activeforeground='white',selectcolor="black"
         )
         self.istGefroren = Tk.Checkbutton(
             self.root,
@@ -240,14 +247,14 @@ class GUI:
             variable=self.var2,
             onvalue=1,
             offvalue=0,
-            command=self.generate_Datensatz,
+            command=self.generate_Datensatz, bg="black",foreground="white", activebackground='black', activeforeground='white',selectcolor="black"
         )
         self.IstRefreshSamplesGecheckht.grid(column=1, row=0)
         self.istGefroren.grid(column=1, row=1)
 
         # Create and place the student T scale widget, initially shown
         self.freiheitgradVonStudenTverteilung = Tk.Scale(
-            self.root, orient=Tk.HORIZONTAL, length=300, from_=1, to=100
+            self.root, orient=Tk.HORIZONTAL, length=300, from_=1, to=100, bg="black",foreground="white",troughcolor='#13052A',highlightthickness=0
         )
         self.freiheitgradVonStudenTverteilung.grid(column=2, row=5)
         # self.freiheitgradVonStudenTverteilung.grid_remove()
@@ -255,9 +262,9 @@ class GUI:
         # Create a boolean variable for the legend checkbox, and add it to a popup menu
         self.legend = Tk.BooleanVar()
         self.legend.set(True)
-        self.men = Tk.Menu(self.root)
+        self.men = Tk.Menu(self.root, bg="black",foreground="white")
         self.men.add_checkbutton(
-            label="Zeige Legende", onvalue=1, offvalue=0, variable=self.legend
+            label="Zeige Legende", onvalue=1, offvalue=0, variable=self.legend,foreground="white", activeforeground="white",selectcolor="white"
         )
 
         # Create an instance of the Animator class
@@ -274,7 +281,7 @@ class GUI:
         # Create the FigureCanvasTkAgg object and place it in the window
         self.canvas = FigureCanvasTkAgg(self.animator.fig, master=self.root)
         self.canvas.get_tk_widget().grid(
-            column=0, row=2, columnspan=2, rowspan=7, padx=0, pady=0
+            column=0, row=2, columnspan=2, rowspan=7, padx=0, pady=0#, bg="black",foreground="white"
         )
         # Bind the popup menu to right-click events on the canvas
         self.canvas.get_tk_widget().bind("<Button-3>", self.do_popup(self.men))

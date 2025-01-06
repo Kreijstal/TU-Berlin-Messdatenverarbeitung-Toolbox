@@ -7,7 +7,7 @@ Created on 2022
 
 @author: Juan
 """
-
+import matplotlib.style as style
 
 class Switch(object):
     # Quelle : https://codegree.de/python-switch-case/
@@ -150,6 +150,10 @@ class TKWindow(tk.Tk):
             title (str, optional): Fenstertitle. Defaults to "Test Window".
         """ ""
         super().__init__()
+        self.config(bg="black")
+        style.use('dark_background')
+        self.tk_setPalette(bg="black",fg="white",background='black', foreground='white',
+               activebackground='#101000', activeforeground="#d0d0d0",troughcolor='#13052A',selectcolor="black")
         self.createWidgets()
         self.init_window(title)
         # self.create_axes()

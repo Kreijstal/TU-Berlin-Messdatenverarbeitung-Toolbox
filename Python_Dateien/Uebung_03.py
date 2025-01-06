@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.animation as animation
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.style as style
 import sys, getopt
 window_title = "Übung 03 - Statische Eigenschaften von Messystemen"
 screenpam=1
@@ -113,6 +114,11 @@ class TKWindow(tk.Tk):
             title (str, optional): Setzt den Titel des Fensters. Defaults to "Test Window".
         """
         super().__init__()
+        self.config(bg="black")
+        style.use('dark_background')
+        self.tk_setPalette(bg="black",fg="white",background='black', foreground='white',
+               activebackground='#101000', activeforeground="#d0d0d0",troughcolor='#13052A',selectcolor="black")
+        #bg="black",foreground="white", activebackground='black', activeforeground='white',selectcolor="black"
         self.offsetold=None
         self.ampold=None
         self.wimp=None
@@ -186,6 +192,7 @@ class TKWindow(tk.Tk):
                 ),
                 onvalue=True,
                 offvalue=False,
+                bg="black",foreground="white", activebackground='black', activeforeground='white',selectcolor="black"
             ),
             self.widget_params["amplification_checkbox"]["name"]: tk.Checkbutton(
                 self,
@@ -196,6 +203,7 @@ class TKWindow(tk.Tk):
                 ),
                 onvalue=True,
                 offvalue=False,
+                bg="black",foreground="white", activebackground='black', activeforeground='white',selectcolor="black"
             ),
             self.widget_params["linearity_checkbox"]["name"]: tk.Checkbutton(
                 self,
@@ -206,6 +214,7 @@ class TKWindow(tk.Tk):
                 ),
                 onvalue=True,
                 offvalue=False,
+                bg="black",foreground="white", activebackground='black', activeforeground='white',selectcolor="black"
             ),
         }
 
